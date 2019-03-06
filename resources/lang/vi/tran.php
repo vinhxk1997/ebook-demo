@@ -84,4 +84,12 @@ return [
     'published' => 'Phát Hành',
     'user_confirm' => '',
     'chapter_delete_status' => 'Chương đã bị xoá!',
+    'comment_delete_status' => 'Bình luận đã bị xoá!',
+    'delete_comment' => 'Bạn có chắc muốn xoá bình luận này?',
+    'review_delete_status' => 'Bài phê bình đã bị xoá!',
+    'delete_review' => 'Bạn có chắc muốn xoá bài phê bình này?',
+    'delete_report' => 'Bạn có chắc muốn xoá báo cáo này?',
+    'report_delete_status' => "Báo cáo đã bị xoá!",
+    'update_report' => 'Cập Nhật Báo Cáo',
+    'report_update_status' => 'Cập nhật báo cáo thành công!',
 ];
