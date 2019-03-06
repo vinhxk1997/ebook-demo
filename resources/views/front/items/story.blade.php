@@ -7,7 +7,7 @@
             <a href="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}" class="on-story-preview text-truncate">{{ $story->title }}</a>
         </h5>
         @if (!isset($in_profile))
-        <div class="story-uploader"><a href="{{ route('user_about', ['user_name' => $story->user->login_name]) }}">@lang('app.by') {{ $story->user->full_name }}</a></div>
+        <div class="story-uploader"><a href="{{ route('user_about', ['user' => $story->user->login_name]) }}">@lang('app.by') {{ $story->user->full_name }}</a></div>
         @endif
         <div class="story-stats">
             <span class="view-count"><i class="fa fa-eye"></i> {{ $story->chapters->sum('views') }}</span>

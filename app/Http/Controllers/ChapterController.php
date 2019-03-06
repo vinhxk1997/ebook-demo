@@ -23,7 +23,16 @@ class ChapterController extends Controller
     public function index($id)
     {
         $chapter = $this->chapter->withCount(['votes', 'comments'])->findOrFail($id);
-        $chapter->comments = $this->comment->getComments($chapter->id, $this->chapter->getModel());
+        $chapter->comments = $this->comment->getComments($chapter->id, $this->chapter->getModelClass());
+
+        $session_key = 'reading_' . $id;
+        if (!session($session_key) || (session($session_key) && now()->diffInSeconds(session($session_key)) > 300)) {
+            session([$session_key => now()]);
+            $this->chapter->where('id', $id)->update([
+                'views' => $chapter->views + 1
+            ]);
+            $chapter->views++;
+        }
 
         $story = $chapter->story()->with(['user', 'chapters'])->first();
         $story->chapters = $story->chapters->map(function ($chapter) use ($story) {
@@ -51,7 +60,7 @@ class ChapterController extends Controller
     {
         if ($request->ajax()) {
             $chapter = $this->chapter->findOrFail($id);
-            $comments = $this->comment->getComments($chapter->id, $this->chapter->getModel());
+            $comments = $this->comment->getComments($chapter->id, $this->chapter->getModelClass());
 
             $content = '';
             foreach ($comments as $comment) {

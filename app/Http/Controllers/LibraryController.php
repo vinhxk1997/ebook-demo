@@ -27,6 +27,110 @@ class LibraryController extends Controller
         return view('front.library_save', compact('stories'));
     }
 
+    public function archiveStory(Request $request)
+    {
+        $story_id = $request->story_id;
+
+        $action  = null;
+        $success = false;
+        $message = null;
+
+        if (! $story_id) {
+            $message = trans('app.bad_data');
+        } else {
+            $archive = Auth::user()->archives()->where('story_id', $story_id)->first();
+
+            if (! $archive) {
+                try {
+                    Auth::user()->archives()->attach($story_id);
+                    $success = true;
+                } catch (\Exception $e) {
+                    return $message = trans('app.bad_data');
+                }
+            } else {
+                $success = true;
+                Auth::user()->archives()->detach($story_id);
+            }
+
+            $action = ! $archive ? 'attach' : 'detach';
+        }
+
+        $status = $success ? 200 : 500;
+
+        return response()->json(compact('action', 'success', 'message'), $status);
+    }
+
+    public function archiveStatus(Request $request)
+    {
+        $story_id = $request->story_id;
+
+        $success = false;
+        $message = null;
+
+        if (! $story_id) {
+            $message = trans('app.bad_data');
+        } else {
+            $archive = Auth::user()->archives()->where('story_id', $story_id)->withPivot('is_archive')->first();
+
+            if ($archive) {
+                Auth::user()->archives()->syncWithoutDetaching([
+                    $story_id => [
+                        'is_archive' => ! $archive->pivot->is_archive
+                    ]
+                ]);
+                $success = true;
+            } else {
+                $message = trans('app.bad_data');
+            }
+        }
+
+        $status = $success ? 200 : 500;
+
+        return response()->json(compact('success', 'message'), $status);
+    }
+
+    public function ajaxAddToList(SaveList $list, Request $request)
+    {
+        $story_id = $request->story_id;
+
+        $action  = null;
+        $success = false;
+        $message = null;
+
+        if (! $story_id) {
+            $message = trans('app.bad_data');
+        } else {
+            $exists = $list->stories()->where('story_id', $story_id)->first();
+
+            if (! $exists) {
+                try {
+                    $list->stories()->attach($story_id);
+                    $success = true;
+                } catch (\Exception $e) {
+                    return $message = trans('app.bad_data');
+                }
+            } else {
+                $success = true;
+                $list->stories()->detach($story_id);
+            }
+
+            $action = ! $exists ? 'attach' : 'detach';
+        }
+
+        $status = $success ? 200 : 500;
+
+        return response()->json(compact('action', 'success', 'message'), $status);
+    }
+
+    public function ajaxArchive($story_id)
+    {
+        $result = Auth::user()->archives()->where('story_id', $story_id)->update([
+            'is_archive' => DB::raw('1 - is_archive'),
+        ]);
+
+        return response()->json(['success' => $result]);
+    }
+
     public function archive()
     {
         $stories = $this->user->getSaveStories(Auth::user(), 1);
@@ -39,13 +143,13 @@ class LibraryController extends Controller
         $lists = $this->saveList->getSaveLists(Auth::user());
 
         if ($request->ajax()) {
-            return $this->listsAjax($lists);
+            return $this->listsAjaxPaginate($lists);
         }
 
         return view('front.library_list', compact('lists'));
     }
 
-    private function listsAjax($lists)
+    private function listsAjaxPaginate($lists)
     {
         $content = '';
         foreach ($lists as $list) {
@@ -56,6 +160,17 @@ class LibraryController extends Controller
         $lists['content'] = $content;
 
         return response()->json($lists);
+    }
+
+    public function ajaxLists(Request $request)
+    {
+        $story_id = $request->story_id;
+        $lists = $this->saveList->getAjaxLists(Auth::user(), $story_id);
+        $is_archived = Auth::user()->archives()->where('story_id', $story_id)->count();
+
+        $content = view('front.ajax_lists', compact('lists', 'is_archived'))->render();
+
+        return response()->json(compact('content'));
     }
 
     public function createList(CreateReadingListRequest $request)
@@ -83,7 +198,7 @@ class LibraryController extends Controller
             if ($request->query('source') === 'library') {
                 $data = view('front.items.reading_list', ['list' => $list])->render();
             } else {
-                $data = $list;
+                $data = view('front.items.ajax_list', ['list' => $list])->render();
             }
 
             $success = true;

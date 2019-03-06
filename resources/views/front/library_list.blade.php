@@ -3,10 +3,12 @@
 
 @section('tab_content')
     <div class="list-controls my-2">
+        @can('create', App\Models\SaveList::class)
         <button class="btn btn-primary btn-sm on-newlist" data-toggle="modal" data-target="#createReadingListModal">
             @lang('app.new_reading_list')
             <i class="fa fa-plus ml-1"></i>
         </button>
+        @endcan
     </div>
     @if ($lists->count())
         <div class="collection row" id="readingLists">
@@ -30,6 +32,7 @@
 @endsection
 
 @section('modal')
+@can('create', App\Models\SaveList::class)
 <div class="modal fade" id="createReadingListModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         {!! Form::open(['url' => route('create_list', ['source' => 'library']), 'method' => 'post', 'class' => 'modal-content on-create-list']) !!}
@@ -56,4 +59,5 @@
         {!! Form::close() !!}
     </div>
 </div>
+@endcan
 @endsection

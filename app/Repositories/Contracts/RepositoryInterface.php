@@ -16,13 +16,17 @@ interface RepositoryInterface
 
     public function offset($offset);
 
+    public function join($table, $first, $operator = null, $second = null, $type = 'inner', $where = false);
+
     public function count();
 
     public function with($relations);
 
     public function withCount($relations);
 
-    public function select();
+    public function select($columns = ['*']);
+
+    public function selectRaw($expression, array $bindings = []);
 
     public function all();
     

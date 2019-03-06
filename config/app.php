@@ -5,6 +5,12 @@ return [
     'per_page' => 10,
     // comments per page
     'comments_per_page' => 5,
+    'followings_per_page' => 8, // in user followings
+    // number of followings user show in profile page
+    'profile_shown_following' => 5,
+    'profile_shown_stories' => 3,
+    'profile_reading_list_shown' => 2,
+    'profile_list_shown_stories' => 3,
     // random items
     'random_items' => 5,
     'max_random_items' => 25,

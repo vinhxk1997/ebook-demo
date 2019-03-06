@@ -29,9 +29,14 @@ class BaseRepository implements RepositoryInterface
         return $this->model_path . $this->model_name;
     }
 
-    public function getModel()
+    public function getModelClass()
     {
         return $this->model();
+    }
+
+    public function getModel()
+    {
+        return $this->model;
     }
 
     protected function resetModel()
@@ -86,6 +91,15 @@ class BaseRepository implements RepositoryInterface
     public function offset($offset)
     {
         $this->model = $this->model->offset($offset);
+
+        return $this;
+    }
+
+    public function join($table, $first, $operator = null, $second = null, $type = 'inner', $where = false)
+    {
+        $this->model = $this->model->join($table, $first, $operator, $second, $type, $where);
+
+        return $this;
     }
 
     public function count()
@@ -119,7 +133,14 @@ class BaseRepository implements RepositoryInterface
 
     public function select($columns = ['*'])
     {
-        $this->model = $this->model->select(...$columns);
+        $this->model = $this->model->select($columns);
+
+        return $this;
+    }
+
+    public function selectRaw($expression, array $bindings = [])
+    {
+        $this->model = $this->model->selectRaw($expression, $bindings);
 
         return $this;
     }

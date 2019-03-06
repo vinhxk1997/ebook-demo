@@ -5,6 +5,21 @@ use App\Repositories\BaseRepository;
 
 class UserRepository extends BaseRepository
 {
+    public function findByLoginName($login_name)
+    {
+        return $this->where('login_name', $login_name)->first();
+    }
+
+    public function findOrFailByLoginName($login_name)
+    {
+        $user = $this->findByLoginName($login_name);
+        if (! $user) {
+            abort(404);
+        }
+
+        return $user;
+    }
+
     public function getSaveStories($user, $is_archive = 0)
     {
         $stories = $user->archives()

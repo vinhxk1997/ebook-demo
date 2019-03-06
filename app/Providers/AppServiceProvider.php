@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Repositories\MetaRepository;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Route;
+use Route, Request;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(MetaRepository $meta)
     {
-        if (! (app()->runningInConsole() ||
+        if (! (Request::ajax() || app()->runningInConsole() ||
             Route::is('login') || Route::is('register')
             && Route::is('admin/*') || Route::is('password/*') || Route::is('email/*')
         )) {

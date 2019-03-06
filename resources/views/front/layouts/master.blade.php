@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="{{ asset('vendor/owl.carousel/assets/owl.theme.default.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" type="text/css">
 </head>
 
 <body>
@@ -50,11 +49,11 @@
                     @auth
                     <li class="nav-item dropdown user-dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-                            <img class="user-avatar" src="{{ get_avatar(Auth::user(), 48) }}" alt="{{ Auth::user()->login_name }}" />
+                            <img class="user-avatar" src="{{ get_avatar(Auth::user()) }}" alt="{{ Auth::user()->login_name }}" />
                             <span>{{ Auth::user()->full_name }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a href="{{ route('user_about', ['user_name' => Auth::user()->login_name]) }}" class="dropdown-item">@lang('app.my_profile')</a>
+                            <a href="{{ route('user_about', ['user' => Auth::user()->login_name]) }}" class="dropdown-item">@lang('app.my_profile')</a>
                             <a href="{{ route('library') }}" class="dropdown-item">@lang('app.library')</a>
                             <div class="dropdown-divider"></div>
                             <a href="#" class="dropdown-item" id="logout">@lang('app.logout')</a>

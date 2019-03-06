@@ -53,6 +53,11 @@ class User extends Authenticatable
     protected $casts = [
         'is_banned' => 'boolean',
     ];
+    
+    public function getRouteKeyName()
+    {
+        return 'login_name';
+    }
 
     public function archives()
     {
@@ -86,7 +91,7 @@ class User extends Authenticatable
 
     public function profile()
     {
-        return $this->hasOne('App\Models\UserProfile', 'user_id');
+        return $this->hasOne('App\Models\UserProfile', 'user_id')->withDefault();
     }
 
     public function profilePosts()

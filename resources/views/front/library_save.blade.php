@@ -11,18 +11,22 @@
         <div class="row">
             @if ($stories->count())
                 @foreach ($stories as $story)
-                <div class="col">
-                    <div class="cover">
+                <div class="col" data-id="{{ $story->id }}">
+                    <div class="cover on-mouse-out">
                         <img src="{{ get_story_cover($story, 0) }}" />
                         <div class="overlay p-3">
                             <div class="quick-control text-right">
-                                <button class="btn text-white"><i class="fa fa-trash"></i></button>
+                                <button class="btn text-white on-unarchive"><i class="fa fa-trash"></i></button>
                             </div>
                             <div class="controls">
-                                <a class="btn btn-dark btn-block btn-sm" href="{{ route('read_chapter', ['id' => $story->first_chapter->id, 'slug' => $story->first_chapter->slug]) }}">@lang('app.start_reading')</a>
-                                <a class="btn btn-dark btn-block btn-sm" href="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}">@lang('app.details')</a>
-                                <button class="btn btn-dark btn-block btn-sm">@lang('app.archive')</button>
-                                <button class="btn btn-dark btn-block btn-sm">@lang('app.add_to_list')</button>
+                                <a class="control-item btn btn-dark btn-block btn-sm" href="{{ route('read_chapter', ['id' => $story->first_chapter->id, 'slug' => $story->first_chapter->slug]) }}">@lang('app.start_reading')</a>
+                                <a class="control-item btn btn-dark btn-block btn-sm" href="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}">@lang('app.details')</a>
+                                <button class="control-item btn btn-dark btn-block btn-sm on-archive-status">@lang('app.archive')</button>
+                                <div class="control-item dropup button-lists-add" data-id="{{ $story->id }}">
+                                    <button class="btn btn-dark btn-block btn-sm on-lists-add">@lang('app.add_to_list')</button>
+                                    <div class="dropdown-menu dropup lists"></div>
+                                </div>
+                                    
                             </div>
                         </div>
                     </div>
@@ -32,7 +36,7 @@
                                 <strong>{{ $story->title }}</strong>
                                 <small>{{ $story->user->login_name }}</small>
                             </div>
-                            <a class="avatar avatar-sm flex-shrink-0" href="{{ route('user_about', ['user_name' => $story->user->login_name]) }}"><img src="{{ get_avatar($story->user, 0) }}" /></a>
+                            <a class="avatar avatar-sm flex-shrink-0" href="{{ route('user_about', ['user' => $story->user->login_name]) }}"><img src="{{ get_avatar($story->user) }}" /></a>
                         </div>
                         <div class="meta row">
                             <span class="col-6"><i class="fa fa-eye"></i> {{ $story->chapters->sum('views') }}</span>
