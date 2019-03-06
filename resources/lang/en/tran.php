@@ -83,4 +83,12 @@ return [
     'delete_story' => 'Are you sure delete this story?',
     'published' => 'Published',
     'chapter_delete_status' => 'Chapter has been deleted!',
+    'comment_delete_status' => 'Comment has been deleted!',
+    'delete_comment' => 'Are you sure delete this meta?',
+    'review_delete_status' => 'Review has been deleted!',
+    'delete_review' => 'Are you sure delete this review?',
+    'delete_report' => 'Are you sure delete this report?',
+    'report_delete_status' => "Report has been deleted!",
+    'update_report' => 'Update Report',
+    'report_update_status' => 'Report has been updated!',
 ];

@@ -42,13 +42,6 @@
         <!-- Navbar Search -->
         <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
             <div class="input-group">
-                <input type="text" class="form-control" aria-label="Search"
-                    aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
             </div>
         </form>
 
@@ -64,29 +57,12 @@
                     <a class="dropdown-item" href="{!! route('change-language', ['vi']) !!}">{{ trans('tran.vietnamese') }}</a>
                 </div>
             </li>
-            <li class="nav-item dropdown no-arrow mx-1">
-                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    <span class="badge badge-danger">8</span>
-                    <i class="fas fa-bell fa-fw"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
-                    <a class="dropdown-item" href="#"></a>
-                    <a class="dropdown-item" href="#"></a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#"></a>
-                </div>
-            </li>
             <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
-                    <span class="badge badge-danger">9+</span>
                     <i class="fas fa-user-circle fa-fw"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#"></a>
-                    <a class="dropdown-item" href="#"></a>
-                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">{{ trans('tran.logout') }}</a>
                 </div>
             </li>
@@ -129,12 +105,12 @@
                     <span>{{ trans('tran.comment') }}</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                    <a class="dropdown-item" href="#">{{ trans('tran.story_comment') }}</a>
-                    <a class="dropdown-item" href="#">{{ trans('tran.review_comment') }}</a>
+                    <a class="dropdown-item" href="{{ route('story_comment') }}">{{ trans('tran.story_comment') }}</a>
+                    <a class="dropdown-item" href="{{ route('review_comment') }}">{{ trans('tran.review_comment') }}</a>
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ route('report') }}">
                     <i class="fas fa-fw fa-flag"></i>
                     <span>{{ trans('tran.report') }}</span></a>
             </li>

@@ -1,7 +1,7 @@
 .bookTable {
     width: 100%;
 }
-.bookTable th:nth-child(9) {
+.bookTable th:last-child {
     width: 18%;
 }
 .metaTable {

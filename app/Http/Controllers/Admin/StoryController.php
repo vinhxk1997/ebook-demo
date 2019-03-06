@@ -65,19 +65,4 @@ class StoryController extends Controller
         
         return redirect('/admin/stories')->with('status', __('tran.story_delete_status'));
     }
-
-    public function admin()
-    {
-        return view('backend.index');
-    }
-
-    public function review()
-    {
-        return view('backend.review');
-    }
-
-    public function detail()
-    {
-        return view('backend.stories.detail');
-    }
 }

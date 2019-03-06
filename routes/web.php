@@ -21,7 +21,6 @@ Route::get('/stories/{slug}/new', 'MetaController@newStories')->name('meta_new_s
 Route::get('/story/{id}-{slug}', 'StoryController@story')->name('story');
 // Story chapters
 Route::get('/{id}-{slug}', 'ChapterController@index')->name('read_chapter');
-Route::get('/chapter/{id}/comments', 'ChapterController@comments')->name('chapter_comments');
 // Saved stories
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/library', 'LibraryController@library')->name('library');
@@ -54,13 +53,26 @@ Route::group(array('namespace' => 'Admin'), function () {
     Route::get('admin/stories', 'StoryController@index')->name('story_admin');
     Route::get('admin/story/{id}/info', 'StoryController@show')->name('story_info');
     Route::post('admin/story/{id}/info', 'StoryController@update')->name('story_update');
-    Route::get('admin', 'StoryController@admin')->name('admin');
     Route::get('admin/story/{id}/delete', 'StoryController@destroy')->name('delete_story');
-    Route::get('admin/reviews', 'StoryController@review')->name('review');
 
     Route::get('admin/story/{id}/detail', 'ChapterController@show')->name('story_detail');
     Route::get('admin/story/chapter/{id}', 'ChapterController@chapterDetail')->name('chapter');
     Route::get('admin/story/chapter/{id}/delete', 'ChapterController@destroy')->name('delete_chapter');
+
+    Route::get('admin/comment/story', 'CommentController@storyComment')->name('story_comment');
+    Route::get('admin/comment/review', 'CommentController@reviewComment')->name('review_comment');
+    Route::get('admin/comment/{id}/reply', 'CommentController@replyComment')->name('reply_comment');
+    Route::get('admin/comment/delete/{id}', 'CommentController@destroy')->name('delete_comment');
+
+
+    Route::get('admin/reviews', 'ReviewController@index')->name('review');
+    Route::get('admin/review/delete/{id}', 'ReviewController@destroy')->name('delete_review');
+    Route::get('admin', 'HomeController@index')->name('admin');
+
+    Route::get('admin/reports', 'ReportController@index')->name('report');
+    Route::get('admin/report/update/{id}', 'ReportController@edit')->name('update_report');
+    Route::post('admin/report/update/{id}', 'ReportController@update');
+    Route::get('admin/report/delete/{id}', 'ReportController@destroy')->name('delete_report');
 });
 
 Route::group(['middleware' => 'locale'], function() {
