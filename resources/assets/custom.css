@@ -1,0 +1,22 @@
+.bookTable {
+    width: 100%;
+}
+.bookTable th:nth-child(9) {
+    width: 18%;
+}
+.metaTable {
+    width: 100%;
+}
+.metaTable th:nth-child(4) {
+    width: 15%;
+}
+.cates {
+    float: left;
+    width: auto;
+    font-weight: 1000;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 100px;
+    background-color: lightcyan;
+    margin-left: 10px;
+}
