@@ -64,10 +64,14 @@ $(document).ready(function () {
         }).done(function (res) {
             if (res.success === true) {
                 if (res.source === 'library') {
-                    $('#readingLists').prepend(res.data)
+                    // load from library
+                    $('#readingLists').prepend(res.data);
+                    $this.closest('.modal').modal('hide');
+                } else {
+                    // load from save story
+                    $this.closest('.lists').find('.dropdown-divider').before(res.data);
                 }
                 $input.val('');
-                $this.closest('.modal').modal('hide');
                 ebook.showNotify(res.message, 'success')
             } else {
                 ebook.showNotify(res.message, 'success')
@@ -126,6 +130,99 @@ $(document).ready(function () {
         })
     }).on('click', '.on-lists-add', function(e) {
         e.preventDefault();
+
+        var $this = $(this),
+            $target = $this.closest('.button-lists-add'),
+            $list = $target.find('.lists'),
+            $mustToggleClass = $($target).add($list);
+
+        if (!$target.hasClass('show')) {
+            $.ajax({
+                method: 'get',
+                url: ebook.base_url + '/ajax/lists',
+                data: {
+                    story_id: $target.data('id')
+                },
+                cache: false
+            }).done(function(res) {
+                $list.html(res.content);
+                $mustToggleClass.toggleClass('show');
+            }).fail(function (e) {
+                ebook.showNotify(ebook.lang.unknow_error)
+            })
+        } else {
+            $mustToggleClass.removeClass('show');
+        }
+    }).on('click', '.on-archive, .on-add-to-list', function(e) {
+        e.preventDefault();
+        var $this = $(this),
+            $target = $this.closest('.button-lists-add'),
+            do_archive = $this.hasClass('on-archive');
+
+        $.ajax({
+            method: 'post',
+            url: ebook.base_url + (do_archive ? '/library' : '/lists/' + $this.data('id') + '/stories'),
+            data: {
+                story_id: $target.data('id')
+            },
+            cache: false
+        }).done(function(res) {
+            if (res.success === true) {
+                if (res.action == 'detach') {
+                    $this.children().last().remove()
+                } else {
+                    $this.append($('<i/>').addClass('fa fa-check-circle-o saved'))
+                }
+            }
+        }).fail(function (res) {
+            ebook.showNotify(res.message)
+        })
+    }).on('mouseleave', '.on-mouse-out', function () {
+        $(this).find('.show').removeClass('show');
+    }).on('click', '.on-archive-status', function (e) {
+        e.preventDefault();
+        var $this = $(this),
+            $target = $this.closest('.col');
+        
+        $.ajax({
+            method: 'post',
+            url: ebook.base_url + '/archive',
+            data: {
+                story_id: $target.data('id')
+            },
+            cache: false
+        }).done(function (res) {
+            if (res.success === true) {
+                $target.fadeOut('slow', function() {
+                    $target.remove();
+                });
+            } else {
+                ebook.showNotify(ebook.lang.unknow_error)
+            }
+        }).fail(function (res) {
+            ebook.showNotify(res.message)
+        })
+    }).on('click', '.on-unarchive', function(e) {
+        e.preventDefault();
+        var $this = $(this),
+            $target = $this.closest('.col');
+
+        $.ajax({
+            method: 'post',
+            url: ebook.base_url + '/library',
+            data: {
+                story_id: $target.data('id')
+            },
+            cache: false
+        }).done(function(res) {
+            if (res.success === true) {
+                $target.fadeOut('slow', function() {
+                    $target.remove();
+                })
+            }
+        }).fail(function (res) {
+            ebook.showNotify(res.message)
+        })
     });
     $('#logout').on('click', function (e) {
         e.preventDefault();
