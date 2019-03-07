@@ -84,10 +84,6 @@ pre {
     height: 102px;
 }
 
-.background.background-lg {
-    padding-top: 3rem;
-}
-
 .cover {
     display: block;
     background-color: #eee;
@@ -167,7 +163,7 @@ pre {
     border-bottom: 1px solid #eee;
 }
 
-.background.background-lg>.sub-navigation {
+.background.background-lg .sub-navigation {
     margin-top: 36px;
 }
 
@@ -932,6 +928,10 @@ ul#footer-items {
 }
 
 /* profile */
+.profile-layout header .header-container {
+    padding-top: 3rem;
+    background-color: rgba(0, 0, 0, .5)
+}
 .profile-layout header.background-lg h1 {
     font-weight: 700;
     font-size: 24px;
@@ -1316,6 +1316,10 @@ ul#footer-items {
     font-size: 1.5rem
 }
 
+.library .collection .col .overlay .control-item:not(:first-child) {
+    margin-top: 0.5rem
+}
+
 .library .collection .col .overlay .btn {
     font-weight: bold;
 }
@@ -1345,4 +1349,14 @@ ul#footer-items {
 
 #readingLists:empty~p {
     display: block
+}
+
+.button-lists-add .lists .dropdown-item {
+    position: relative;
+}
+.button-lists-add .lists .fa.saved {
+    font-size: 1.5rem;
+    color: #28a745;
+    position: absolute;
+    right: 0.5rem
 }
