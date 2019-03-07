@@ -33,26 +33,17 @@
                     </div>
                 </div>
             </div>
+            @auth
             <div class="top-bar-actions my-auto">
-                <div class="d-inline-block dropdown button-save">
-                    <button class="btn btn-primary" id="saveStory" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">+</button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a href="#" class="dropdown-item"><i class="fa fa-bookmark fa-fw"></i> @lang('app.my_library')
-                            (@lang('app.private'))</a>
-                        <a href="#" class="dropdown-item"><i class="fa fa-book fa-fw"></i> Reading list</a>
-                        <div class="dropdown-divider"></div>
-                        <div class="inputs d-flex">
-                            {!! Form::text('name', null, ['class' => 'form-control form-control-sm', 'placeholder' =>
-                            __('app.add_new_reading_list')]) !!}
-                            {!! Form::submit('+', ['class' => 'btn btn-primary btn-sm']) !!}
-                        </div>
-                    </div>
+                <div class="d-inline-block dropdown button-lists-add" data-id="{{ $story->id }}">
+                    <button class="btn btn-primary on-lists-add">+</button>
+                    <div class="dropdown-menu dropdown-menu-right lists"></div>
                 </div>
                 <div class="d-inline-block button-vote">
                     <button class="btn btn-default voted"><i class="fa fa-star mr-2"></i> @lang('app.vote')</button>
                 </div>
             </div>
+            @endauth
         </div>
     </div>
     <div id="chapter-container">
@@ -69,7 +60,7 @@
                         <a class="avatar avatar-sm mx-auto">
                             <img src="{{ get_avatar($story->user) }}" />
                         </a>
-                        @lang('app.by') <a href="{{ route('user_about', ['user_name' => $story->user->login_name]) }}">{{ $story->user->full_name }}</a>
+                        @lang('app.by') <a href="{{ route('user_about', ['user' => $story->user->login_name]) }}">{{ $story->user->full_name }}</a>
                     </div>
                 </div>
                 <div class="chapter-content row">
@@ -86,11 +77,6 @@
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x text-twitter"></i>
                                     <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                </span></a>
-                            <a class="social-share" href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x text-dark"></i>
-                                    <i class="fa fa-user fa-stack-1x fa-inverse"></i>
                                 </span></a>
                             <a class="social-share" href="#">
                                 <span class="fa-stack fa-lg">
@@ -137,26 +123,15 @@
                         </div>
                         <div class="chapter-actions d-flex justify-content-between mt-3">
                             <div class="actions my-auto">
-                                <div class="d-inline-block dropdown button-save">
-                                    <button class="btn" id="saveStory" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false"><i class="fa fa-plus"></i> @lang('app.add')</button>
-                                    <div class="dropdown-menu dropdown-menu-left">
-                                        <a href="#" class="dropdown-item"><i class="fa fa-bookmark fa-fw"></i>
-                                            @lang('app.my_library')
-                                            (@lang('app.private'))</a>
-                                        <a href="#" class="dropdown-item"><i class="fa fa-book fa-fw"></i> Reading list</a>
-                                        <div class="dropdown-divider"></div>
-                                        <div class="inputs d-flex">
-                                            {!! Form::text('name', null, ['class' => 'form-control form-control-sm',
-                                            'placeholder' =>
-                                            __('app.add_new_reading_list')]) !!}
-                                            {!! Form::submit('+', ['class' => 'btn btn-primary btn-sm']) !!}
-                                        </div>
-                                    </div>
+                                @auth
+                                <div class="d-inline-block dropdown button-lists-add" data-id="{{ $story->id }}">
+                                    <button class="btn on-lists-add"><i class="fa fa-plus"></i> @lang('app.add')</button>
+                                    <div class="dropdown-menu dropdown-menu-left lists"></div>
                                 </div>
                                 <div class="d-inline-block button-vote">
                                     <button class="btn btn-default unvoted"><i class="fa fa-star mr-2"></i> @lang('app.vote')</button>
                                 </div>
+                                @endauth
                             </div>
                             <div class="share">
                                 <a class="social-share" target="_blank" href="https://www.facebook.com/sharer.php?u={{ $chapter->share_url }}">
@@ -169,11 +144,6 @@
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-circle fa-stack-2x text-twitter"></i>
                                         <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                    </span></a>
-                                <a class="social-share" href="#">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-circle fa-stack-2x text-dark"></i>
-                                        <i class="fa fa-user fa-stack-1x fa-inverse"></i>
                                     </span></a>
                                 <a class="social-share" href="#">
                                     <span class="fa-stack fa-lg">

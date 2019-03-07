@@ -21,22 +21,36 @@ Route::get('/stories/{slug}/new', 'MetaController@newStories')->name('meta_new_s
 Route::get('/story/{id}-{slug}', 'StoryController@story')->name('story');
 // Story chapters
 Route::get('/{id}-{slug}', 'ChapterController@index')->name('read_chapter');
+Route::get('/chapter/{id}/comments', 'ChapterController@comments')->name('chapter_comments');
 // Saved stories
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/library', 'LibraryController@library')->name('library');
     Route::get('/archive', 'LibraryController@archive')->name('archive');
     Route::get('/lists', 'LibraryController@lists')->name('lists');
-    Route::post('/lists', 'LibraryController@createList')->name('create_list')->middleware('verified');
     Route::get('/lists/{list}', 'LibraryController@list')->name('list');
     Route::post('/lists/{list}', 'LibraryController@update');
-    Route::delete('/lists/{list}', 'LibraryController@delete')->name('delete_list');
+    // ajax
+    Route::group(['middleware' => 'ajax'], function () {
+        Route::post('/library', 'LibraryController@archiveStory');
+        Route::post('/archive', 'LibraryController@archiveStatus');
+        Route::post('/lists', 'LibraryController@createList')
+            ->name('create_list')
+            ->middleware('can:create,App\Models\SaveList');
+        Route::post('/lists/{list}/stories', 'LibraryController@ajaxAddToList');
+        Route::delete('/lists/{list}', 'LibraryController@delete')->name('delete_list');
+
+        Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
+            Route::get('/lists', 'LibraryController@ajaxLists')->name('lists');
+            Route::post('/archive', 'LibraryController@ajaxArchive')->name('archive');
+        });
+    });
 });
 // profile
-Route::get('/user/{user_name}', 'UserController@index')->name('user_about');
-Route::get('/user/{user_name}/activity', 'UserController@conversations')->name('user_conversations');
-Route::get('/user/{user_name}/following', 'UserController@following')->name('user_following');
+Route::get('/user/{user}', 'UserController@index')->name('user_about');
+Route::get('/user/{user}/activity', 'UserController@conversations')->name('user_conversations');
+Route::get('/user/{user}/following', 'UserController@following')->name('user_following');
 
-Route::group(array('namespace' => 'Admin'), function () {
+Route::group(['namespace' => 'Admin', 'middleware' => 'admin'], function () {
     Route::get('admin/users', 'UserController@index')->name('user');
     Route::get('admin/user/{id?}/update', 'UserController@edit')->name('update_user');
     Route::post('admin/user/{id?}/update', 'UserController@update');

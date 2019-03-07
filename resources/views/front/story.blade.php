@@ -10,15 +10,15 @@
                 </div>
                 <h1>{{ $story->title }}</h1>
                 <div class="story-stats">
-                    <span title="@lang('app.view_count', ['count' => $story->views ])">@lang('app.view_count', ['count' => $story->views])</span>
-                    <span title="@lang('app.vote_count', ['count' => $story->votes_count])">@lang('app.vote_count', ['count' => $story->votes_count])</span>
+                    <span title="@lang('app.view_count', ['count' => $story->chapters->sum('views')])">@lang('app.view_count', ['count' => $story->chapters->sum('views')])</span>
+                    <span title="@lang('app.vote_count', ['count' => $story->chapters->sum('votes_count')])">@lang('app.vote_count', ['count' => $story->chapters->sum('votes_count')])</span>
                     <span>@lang('app.chapter_count', ['count' => $story->chapters_count])</span>
                 </div>
                 <div class="story-author">
                     <a href="#" class="avatar avatar-md pull-left">
-                        <img src="{{ get_avatar($story->user, 0) }}" width="48" height="48" alt="{{ $story->user->full_name }}" />
+                        <img src="{{ get_avatar($story->user) }}" width="48" height="48" alt="{{ $story->user->full_name }}" />
                     </a>
-                    <strong>@lang('app.by') <a href="{{ route('user_about', ['user_name' => $story->user->login_name]) }}">{{ $story->user->login_name }}</a></strong>
+                    <strong>@lang('app.by') <a href="{{ route('user_about', ['user' => $story->user->login_name]) }}">{{ $story->user->login_name }}</a></strong>
                     <small title="@lang('app.first_published'): {{ $story->created_at->format(__('app.d_m_y_format')) }}">
                         @if ($story->is_completed)
                         <span>@lang('app.completed')</span>
@@ -61,24 +61,15 @@
                 <main class="card card-no-top">
                     <div class="card-body">
                         <div class="story-actions">
-                            <a href="{{ route('read_chapter', ['id' => $first_chapter->id, 'slug' => $first_chapter->slug]) }}" class="btn btn-primary btn-sm start-reading">@lang('app.read')</a>
-                            <div class="d-inline-block dropdown button-save">
-                                <button class="btn btn-sm btn-primary" id="saveStory" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">+</button>
-                                <div class="dropdown-menu">
-                                    <a href="#" class="dropdown-item"><i class="fa fa-bookmark fa-fw"></i>
-                                        @lang('app.my_library')
-                                        (@lang('app.private'))</a>
-                                    <a href="#" class="dropdown-item"><i class="fa fa-book fa-fw"></i> Reading list</a>
-                                    <div class="dropdown-divider"></div>
-                                    <div class="inputs d-flex">
-                                        {!! Form::text('name', null, ['class' => 'form-control form-control-sm',
-                                        'placeholder' =>
-                                        __('app.add_new_reading_list')]) !!}
-                                        {!! Form::submit('+', ['class' => 'btn btn-primary btn-sm']) !!}
-                                    </div>
-                                </div>
+                            <a href="{{ route('read_chapter', ['id' => $first_chapter->id, 'slug' => $first_chapter->slug]) }}" class="btn btn-primary btn-sm start-reading">
+                                @lang('app.read')
+                            </a>
+                            @auth
+                            <div class="d-inline-block dropdown button-lists-add" data-id="{{ $story->id }}">
+                                <button class="btn btn-sm btn-primary on-lists-add">+</button>
+                                <div class="dropdown-menu lists"></div>
                             </div>
+                            @endauth
                         </div>
                         <h2 class="story-summary">
                             {{ $story->summary }}
@@ -106,10 +97,10 @@
                                         <li class="list-group-item">
                                             <div class="header clearfix">
                                                 <div class="avatar avatar-sm">
-                                                    <img src="{{ get_avatar($comment->user, 0) }}" />
+                                                    <img src="{{ get_avatar($comment->user) }}" />
                                                 </div>
                                                 <div class="info">
-                                                    <a class="username" href="{{ route('user_about', ['user_name' => $comment->user->login_name]) }}">{{ $comment->user->full_name }}</a> on <a class="chapername"
+                                                    <a class="username" href="{{ route('user_about', ['user' => $comment->user->login_name]) }}">{{ $comment->user->full_name }}</a> on <a class="chapername"
                                                         href="{{ route('read_chapter', ['id' => $comment->chapter->id,  'slug' => $comment->chapter->slug]) }}">{{ $comment->chapter->title }}</a>
                                                     <small>{{ $comment->created_at->format(__('app.d_m_y_format')) }}</small>
                                                 </div>

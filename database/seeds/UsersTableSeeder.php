@@ -20,6 +20,7 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('123456'),
             'remember_token' => str_random(10),
             'full_name' => 'Administrator',
+            'created_at' => now(),
         ]);
         factory(App\Models\User::class, 50)->create()->each(function ($user) {
             $user->profile()->save(factory(App\Models\UserProfile::class)->make());

@@ -808,7 +808,7 @@ ul#footer-items {
 }
 
 #story-reading .button-vote .btn,
-#story-reading .button-save .btn {
+#story-reading .button-lists-add .btn {
     font-weight: bold
 }
 
@@ -828,12 +828,12 @@ ul#footer-items {
     color: #28a745
 }
 
-.button-save .dropdown-menu .inputs {
+.button-lists-add .dropdown-menu .inputs {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
 }
 
-.button-save .dropdown-menu .inputs .form-control {
+.button-lists-add .dropdown-menu .inputs .form-control {
     display: inline-block;
     width: initial;
     margin-right: 0.5rem

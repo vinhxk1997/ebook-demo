@@ -7,7 +7,7 @@
     <div class="col-main">
         <div class="header">
             <div class="info">
-                <a href="{{ route('user_about', ['user_name' => $comment->user->login_name]) }}">{{ $comment->user->full_name }}</a>
+                <a href="{{ route('user_about', ['user' => $comment->user->login_name]) }}">{{ $comment->user->full_name }}</a>
                 <small>{{ $comment->created_at->diffForHumans() }}</small>
             </div>
             <div class="dropdown">

@@ -124,6 +124,8 @@ $(document).ready(function () {
         }).fail(function () {
             ebook.showNotify(ebook.lang.unknow_error);
         })
+    }).on('click', '.on-lists-add', function(e) {
+        e.preventDefault();
     });
     $('#logout').on('click', function (e) {
         e.preventDefault();

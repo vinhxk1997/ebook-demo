@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Repositories\BaseRepository;
+use DB;
 
 class SaveListRepository extends BaseRepository
 {
@@ -29,6 +30,18 @@ class SaveListRepository extends BaseRepository
 
             return $list;
         });
+
+        return $lists;
+    }
+
+    public function getAjaxLists($user, $story_id)
+    {
+        $lists = $this->select(['id', 'name'])
+            ->selectRaw(
+                '(SELECT COUNT(*) FROM list_story WHERE list_id = save_lists.id AND story_id = ?) as `story_exists`',
+                [$story_id]
+            )
+            ->where('user_id', $user->id)->get();
 
         return $lists;
     }

@@ -10,23 +10,15 @@
             <span class="chapter-count"><i class="fa fa-list-ul"></i> {{ $story->chapters_count }}</span>
         </div>
         <div class="actions">
-            <a href="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}" class="btn btn-sm btn-primary start-reading">@lang('app.read')</a>
-            <div class="d-inline-block dropdown button-save">
-                <button class="btn btn-sm btn-primary" id="saveStory" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">+</button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a href="#" class="dropdown-item"><i class="fa fa-bookmark fa-fw"></i>
-                        @lang('app.my_library')
-                        (@lang('app.private'))</a>
-                    <a href="#" class="dropdown-item"><i class="fa fa-book fa-fw"></i> Reading list</a>
-                    <div class="dropdown-divider"></div>
-                    <div class="inputs d-flex">
-                        {!! Form::text('name', null, ['class' => 'form-control form-control-sm',
-                        'placeholder' =>
-                        __('app.add_new_reading_list')]) !!}
-                        {!! Form::submit('+', ['class' => 'btn btn-primary btn-sm']) !!}
-                    </div>
-                </div>
+            <a href="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}" class="btn btn-sm btn-primary start-reading">
+                @lang('app.read')
+            </a>
+            @auth
+            <div class="d-inline-block dropdown button-lists-add" data-id="{{ $story->id }}">
+                <button class="btn btn-sm btn-primary on-lists-add">+</button>
+                <div class="dropdown-menu dropdown-menu-right lists"></div>
             </div>
+            @endauth
         </div>
         <div class="story-summary">{{ str_limit($story->summary, config('app.story_summary_limit'), '...') }}
             <a href="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}">@lang('app.more')</a>
