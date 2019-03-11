@@ -27,6 +27,12 @@ class Story extends Model
         'updated_at',
         'deteted_at',
     ];
+    
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->selectRaw('*, MATCH (`title`, `summary`) AGAINST (? IN BOOLEAN MODE) as `rel`', [$keyword])
+            ->whereRaw('MATCH (`title`, `summary`) AGAINST (? IN BOOLEAN MODE)', [$keyword])->orderBy('rel', 'desc');
+    }
 
     public function categories()
     {

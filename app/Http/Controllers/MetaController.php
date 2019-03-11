@@ -20,9 +20,6 @@ class MetaController extends Controller
         $meta->stories = $meta->stories()->with([
             'metas',
             'user',
-            'chapters' => function ($query) {
-                $query->select('id', 'story_id')->withCount('votes');
-            },
         ])
         ->withCount('chapters')->orderBy('views', 'desc')->paginate(config('app.per_page'));
 

@@ -10,8 +10,8 @@
                 </div>
                 <h1>{{ $story->title }}</h1>
                 <div class="story-stats">
-                    <span title="@lang('app.view_count', ['count' => $story->chapters->sum('views')])">@lang('app.view_count', ['count' => $story->chapters->sum('views')])</span>
-                    <span title="@lang('app.vote_count', ['count' => $story->chapters->sum('votes_count')])">@lang('app.vote_count', ['count' => $story->chapters->sum('votes_count')])</span>
+                    <span title="@lang('app.view_count', ['count' => $story->views])">@lang('app.view_count', ['count' => $story->views])</span>
+                    <span title="@lang('app.vote_count', ['count' => $story->votes])">@lang('app.vote_count', ['count' => $story->votes])</span>
                     <span>@lang('app.chapter_count', ['count' => $story->chapters_count])</span>
                 </div>
                 <div class="story-author">
@@ -142,7 +142,7 @@
                                     <small class="story-author">@lang('app.by') {{ $recommended_story->user->login_name }}</small>
                                     <div class="story-stats small mt-auto">
                                         <span class="view-count"><i class="fa fa-eye"></i> {{ $recommended_story->views }}</span>
-                                        <span class="vote-count"><i class="fa fa-star"></i> {{ $recommended_story->chapters->sum('views') }}</span>
+                                        <span class="vote-count"><i class="fa fa-star"></i> {{ $recommended_story->views }}</span>
                                         <span class="chapter-count"><i class="fa fa-list-ul"></i> {{ $recommended_story->chapters_count }}</span>
                                     </div>
                                 </div>

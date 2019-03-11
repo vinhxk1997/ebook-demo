@@ -932,6 +932,7 @@ ul#footer-items {
     padding-top: 3rem;
     background-color: rgba(0, 0, 0, .5)
 }
+
 .profile-layout header.background-lg h1 {
     font-weight: 700;
     font-size: 24px;
@@ -1354,9 +1355,72 @@ ul#footer-items {
 .button-lists-add .lists .dropdown-item {
     position: relative;
 }
+
 .button-lists-add .lists .fa.saved {
     font-size: 1.5rem;
     color: #28a745;
     position: absolute;
     right: 0.5rem
 }
+
+.list-share .social-share {
+    display: inline-block;
+}
+
+.list-editing .hide-on-edit,
+.show-on-edit {
+    display: none
+}
+
+.list-details.list-editing .show-on-edit {
+    display: block
+}
+
+.list-details .custom-control {
+    padding-left: 0;
+    padding-right: 2.5rem;
+}
+
+.list-details .custom-control-label {
+    line-height: 2.5rem;
+}
+
+.list-details .custom-control-label::before {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    left: auto;
+    right: -2.5rem;
+}
+
+.list-details .custom-control-label::after {
+    width: 2rem;
+    height: 2rem;
+    left: auto;
+    right: -2.5rem;
+}
+
+.list-details.list-editing .show-on-edit {
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.list-details .show-on-edit .custom-control {
+    min-height: 2.5rem;
+    margin-top: auto;
+    margin-bottom: auto
+}
+
+#listControls {
+    max-height: 0;
+    display: -ms-flexbox;
+    display: flex;
+    transition: max-height 0.25s, bottom 0.25s;
+    bottom: -17px;
+}
+
+#listControls.show {
+    max-height: 100px;
+    bottom: 0;
+}
+

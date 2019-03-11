@@ -9,6 +9,9 @@ class Chapter extends Model
 {
     use SoftDeletes;
 
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISH = 1;
+
     protected $guarded = ['id'];
 
     protected $casts = [
