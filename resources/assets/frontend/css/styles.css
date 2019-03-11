@@ -1410,3 +1410,17 @@ ul#footer-items {
     margin-top: auto;
     margin-bottom: auto
 }
+
+#listControls {
+    max-height: 0;
+    display: -ms-flexbox;
+    display: flex;
+    transition: max-height 0.25s, bottom 0.25s;
+    bottom: -17px;
+}
+
+#listControls.show {
+    max-height: 100px;
+    bottom: 0;
+}
+

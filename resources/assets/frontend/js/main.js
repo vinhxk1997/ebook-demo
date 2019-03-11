@@ -261,29 +261,76 @@ $(document).ready(function () {
         } else {
             $target.removeClass('list-editing');
         }
-    }).on('change' , '#selectAll', function () {
+    }).on('change' , '#selectAll', function (e) {
         var $this = $(this),
             $stories = $('#listStories').find('[name="select[]"]');
+
+        if (! $stories.length) {
+            return false;
+        }
         
-        var is_not_checked = $stories.filter(function (i, $e) {
+        var $isNotChecked = $stories.filter(function (i, $e) {
             return ! $e.checked;
         });
 
-        var state = !$this.checked && !!is_not_checked.length;
+
+        var state = $this.prop('checked') && $isNotChecked.length > 0;
 
         $stories.map(function(i, $e) {
             $e.checked = state;
         })
+        if ($this.prop('checked')) {
+            $('#listControls').addClass('show');
+            $('#selectedCount').text($stories.length);
+        } else {
+            $('#listControls').removeClass('show');
+            $('#selectedCount').text('0');
+        }
     }).on('change', '[name="select[]"]', function () {
-        $stories = $('#listStories').find('[name="select[]"]');
-        var is_not_checked = $stories.filter(function (i, $e) {
+        var $stories = $('#listStories').find('[name="select[]"]');
+
+        var $isNotChecked = $stories.filter(function (i, $e) {
             return ! $e.checked;
         });
-        if (!is_not_checked.length) {
-            $('#selectAll').prop('checked', true);
+
+        $('#selectAll').prop('checked', $isNotChecked.length === 0);
+
+        if ($isNotChecked.length < $stories.length) {
+            $('#listControls').addClass('show');
+        } else {
+            $('#listControls').removeClass('show');
         }
-        console.log($('#selectAll').prop('checked'));
+        $('#selectedCount').text($stories.length - $isNotChecked.length);
     });
+    $('#removeFromList').on('click', function () {
+        var $this = $(this),
+            $stories = $('#listStories').find('[name="select[]"]');
+        
+        var $isChecked = $stories.filter(function (i, $e) {
+            return $e.checked;
+        });
+
+        var select_ids = $isChecked.map(function (i, $e) { return $e.value }).toArray();
+
+        if ($isChecked.length) {
+            $.ajax({
+                method: 'post',
+                url: $this.data('url'),
+                data: {
+                    select: select_ids
+                },
+                cache: false
+            }).done(function(res) {
+                if (res.success) {
+                    $isChecked.closest('.story').remove();
+                    $('#selectedCount').text('0');
+                    $('#listControls').removeClass('show');
+                }
+            }).fail(function () {
+                ebook.showNotify()
+            })
+        }
+    })
     $('#logout').on('click', function (e) {
         e.preventDefault();
         $('#logoutForm').submit()
