@@ -44,6 +44,10 @@ interface RepositoryInterface
 
     public function update(array $data);
 
+    public function increment($column, $amount = 1, array $extra = []);
+
+    public function decrement($column, $amount = 1, array $extra = []);
+
     public function delete($id);
 
     public function truncate();

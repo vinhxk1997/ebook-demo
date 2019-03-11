@@ -21,7 +21,7 @@
                             <div class="controls">
                                 <a class="control-item btn btn-dark btn-block btn-sm" href="{{ route('read_chapter', ['id' => $story->first_chapter->id, 'slug' => $story->first_chapter->slug]) }}">@lang('app.start_reading')</a>
                                 <a class="control-item btn btn-dark btn-block btn-sm" href="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}">@lang('app.details')</a>
-                                <button class="control-item btn btn-dark btn-block btn-sm on-archive-status">@lang('app.archive')</button>
+                                <button class="control-item btn btn-dark btn-block btn-sm on-archive-status">{{ Route::is('library') ? __('app.archive') : __('app.unarchive') }}</button>
                                 <div class="control-item dropup button-lists-add" data-id="{{ $story->id }}">
                                     <button class="btn btn-dark btn-block btn-sm on-lists-add">@lang('app.add_to_list')</button>
                                     <div class="dropdown-menu dropup lists"></div>
@@ -39,8 +39,8 @@
                             <a class="avatar avatar-sm flex-shrink-0" href="{{ route('user_about', ['user' => $story->user->login_name]) }}"><img src="{{ get_avatar($story->user) }}" /></a>
                         </div>
                         <div class="meta row">
-                            <span class="col-6"><i class="fa fa-eye"></i> {{ $story->chapters->sum('views') }}</span>
-                            <span class="col-6"><i class="fa fa-star"></i> {{ $story->chapters->sum('votes_count') }}</span>
+                            <span class="col-6"><i class="fa fa-eye"></i> {{ $story->views }}</span>
+                            <span class="col-6"><i class="fa fa-star"></i> {{ $story->votes }}</span>
                         </div>
                     </div>
                 </div>

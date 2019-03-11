@@ -37,13 +37,17 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">@lang('app.create')</a>
+                        <a class="nav-link" href="{{ route('works') }}">@lang('app.create')</a>
                     </li>
                 </ul>
-                {!! Form::open(['url' => 'foo/bar', 'class' => 'form-inline d-none d-md-inline-block my-2 my-lg-0 mx-3
+                {!! Form::open(['method' => 'get', 'url' => route('search'), 'class' => 'form-inline d-none d-md-inline-block my-2 my-lg-0 mx-3
                 flex-grow-1 ', 'id' => 'navbarSearch']) !!}
-                {!! Form::text('q', '', ['class' => 'form-control', 'placeholder' => __('app.search_stories_and_people')])
-                !!}
+                {!! Form::text('q', $keyword,
+                    [
+                        'class' => 'form-control',
+                        'placeholder' => __('app.search_stories_and_people'),
+                    ]
+                ) !!}
                 {!! Form::close() !!}
                 <ul class="navbar-nav">
                     @auth
@@ -106,6 +110,8 @@
         var ebook = window.ebook = (ebook || {});
         ebook.base_url = '{{ url('/') }}';
         ebook.lang = {
+            delete_list_confirm: '{{ __('app.delete_list_confirm') }}',
+            unarchive_confirm: '{{ __('app.unarchive_confirm') }}',
             unknow_error: '{{ __('app.unknow_error') }}',
         };
     </script>

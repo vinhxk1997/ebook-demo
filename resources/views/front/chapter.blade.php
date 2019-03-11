@@ -188,7 +188,7 @@
                                 @if ($chapter->comments->hasPages())
                                 <button class="btn btn-light btn-block mt-3 on-show-more" data-url="{{ route('chapter_comments', ['id' => $chapter->id, 'page' => $chapter->comments->currentPage() + 1]) }}" data-target="#chapterComments">
                                     @lang('app.show_more')
-                                    <i class="fa fa-angle-down" aria-hidden="true"></i
+                                    <i class="fa fa-angle-down" aria-hidden="true"></i>
                                 </button>
                                 @endif
                             @else

@@ -4,10 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Auth;
+use App\Models\User;
 
 class Admin
 {
-    const ROLE_ADMIN = 1;
     /**
      * Handle an incoming request.
      *
@@ -17,7 +17,7 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role == self::ROLE_ADMIN) {
+        if (Auth::check() && Auth::user()->role == User::ROLE_ADMIN) {
             return $next($request);
         }
 

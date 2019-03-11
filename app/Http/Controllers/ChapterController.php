@@ -25,21 +25,22 @@ class ChapterController extends Controller
         $chapter = $this->chapter->withCount(['votes', 'comments'])->findOrFail($id);
         $chapter->comments = $this->comment->getComments($chapter->id, $this->chapter->getModelClass());
 
-        $session_key = 'reading_' . $id;
-        if (!session($session_key) || (session($session_key) && now()->diffInSeconds(session($session_key)) > 300)) {
-            session([$session_key => now()]);
-            $this->chapter->where('id', $id)->update([
-                'views' => $chapter->views + 1
-            ]);
-            $chapter->views++;
-        }
-
         $story = $chapter->story()->with(['user', 'chapters'])->first();
         $story->chapters = $story->chapters->map(function ($chapter) use ($story) {
             $chapter->slug = $story->slug . '-' . $chapter->slug;
 
             return $chapter;
         });
+
+        $session_key = 'reading_' . $id;
+        if (!session($session_key) || (session($session_key) && now()->diffInSeconds(session($session_key)) > 300)) {
+            session([$session_key => now()]);
+            // update chapter views
+            $this->chapter->where('id', $id)->increment('views');
+            $chapter->views++;
+            // update story views
+            $this->story->where('id', $story->id)->increment('views');
+        }
 
         $chapter->slug = $story->slug . '-' . $chapter->slug;
         $chapter->share_url = urlencode(route('read_chapter', ['id' => $chapter->id, 'slug' => $chapter->slug]));

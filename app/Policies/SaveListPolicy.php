@@ -10,16 +10,10 @@ class SaveListPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Determine whether the user can view the save list.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SaveList  $saveList
-     * @return mixed
-     */
-    public function view(User $user, SaveList $saveList)
+    // Add, remove story from list
+    public function edit(User $user, SaveList $list)
     {
-        return true;
+        return $user->id == $list->user_id;
     }
 
     /**

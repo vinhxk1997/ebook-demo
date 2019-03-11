@@ -89,25 +89,29 @@ $(document).ready(function () {
     }).on('click', '.on-delete-list', function (e) {
         e.preventDefault();
         var $this = $(this);
-
-        $.ajax({
-            method: 'post',
-            url: $this.data('delete-url'),
-            data: {
-                _method: 'delete'
-            },
-            cache: false,
-            dataType: 'json'
-        }).done(function (res) {
-            if (res.success === true) {
-                $this.closest('.list-item').remove();
-                ebook.showNotify(res.message, 'success')
-            } else {
-                ebook.showNotify(res.message)
-            }
-        }).fail(function (res) {
-            ebook.showNotify(ebook.lang.unknow_error)
-        })
+        if (confirm(ebook.lang.delete_list_confirm)) {
+            $.ajax({
+                method: 'post',
+                url: $this.data('delete-url'),
+                data: {
+                    _method: 'delete'
+                },
+                cache: false
+            }).done(function (res) {
+                if (res.success === true) {
+                    if (!res.redirect) {
+                        $this.closest('.list-item').remove();
+                        ebook.showNotify(res.message, 'success')
+                    } else {
+                        window.location.replace(res.redirect)
+                    }
+                } else {
+                    ebook.showNotify(res.message)
+                }
+            }).fail(function (res) {
+                ebook.showNotify(ebook.lang.unknow_error)
+            })
+        }
     }).on('click', '.on-show-more', function (e) {
         e.preventDefault();
         var $this = $(this);
@@ -206,23 +210,79 @@ $(document).ready(function () {
         e.preventDefault();
         var $this = $(this),
             $target = $this.closest('.col');
+        if (confirm(ebook.lang.unarchive_confirm)) {
+            $.ajax({
+                method: 'post',
+                url: ebook.base_url + '/library',
+                data: {
+                    story_id: $target.data('id')
+                },
+                cache: false
+            }).done(function(res) {
+                if (res.success === true) {
+                    $target.fadeOut('slow', function() {
+                        $target.remove();
+                    })
+                }
+            }).fail(function (res) {
+                ebook.showNotify(res.message)
+            })
+        }
+    }).on('click', '.on-edit-list', function (e) {
+        e.preventDefault();
+        var $this = $(this),
+            $target = $this.closest('.list-details');
+        
+        $target.addClass('list-editing');
+    }).on('click', '.on-edit-list-submit', function (e) {
+        e.preventDefault();
+        var $this = $(this),
+            $input = $('#listNameInput'),
+            $target = $this.closest('.list-details'),
+            value = $input.val().trim();
+        
+        if (value != $input.attr('value')) {
+            $.ajax({
+                method: 'post',
+                url: $target.data('url'),
+                data: {
+                    list_name: $input.val()
+                },
+                cache: false
+            }).done(function (res) {
+                if (res.success === true) {
+                    $input.attr('value', value);
+                    $('#listName').text(value);
+                    $target.removeClass('list-editing');
+                } else {
+                    ebook.showNotify(ebook.lang.unknow_error);
+                }
+            })
+        } else {
+            $target.removeClass('list-editing');
+        }
+    }).on('change' , '#selectAll', function () {
+        var $this = $(this),
+            $stories = $('#listStories').find('[name="select[]"]');
+        
+        var is_not_checked = $stories.filter(function (i, $e) {
+            return ! $e.checked;
+        });
 
-        $.ajax({
-            method: 'post',
-            url: ebook.base_url + '/library',
-            data: {
-                story_id: $target.data('id')
-            },
-            cache: false
-        }).done(function(res) {
-            if (res.success === true) {
-                $target.fadeOut('slow', function() {
-                    $target.remove();
-                })
-            }
-        }).fail(function (res) {
-            ebook.showNotify(res.message)
+        var state = !$this.checked && !!is_not_checked.length;
+
+        $stories.map(function(i, $e) {
+            $e.checked = state;
         })
+    }).on('change', '[name="select[]"]', function () {
+        $stories = $('#listStories').find('[name="select[]"]');
+        var is_not_checked = $stories.filter(function (i, $e) {
+            return ! $e.checked;
+        });
+        if (!is_not_checked.length) {
+            $('#selectAll').prop('checked', true);
+        }
+        console.log($('#selectAll').prop('checked'));
     });
     $('#logout').on('click', function (e) {
         e.preventDefault();

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Story;
 use App\Repositories\StoryRepository;
 use Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
@@ -39,9 +41,6 @@ class HomeController extends Controller
                     return $query->withCount(['chapters', 'metas']);
                 },
                 'saveLists.stories.metas',
-                'saveLists.stories.chapters' => function ($query) {
-                    return $query->select('id', 'story_id')->withCount('votes');
-                },
                 'saveLists.stories.user',
             ]);
 
@@ -56,5 +55,28 @@ class HomeController extends Controller
         }
         
         return $archived_stories;
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = urldecode($request->query('q'));
+        $stories = Story::search($keyword)
+            ->paginate(config('app.per_page'))
+            ->appends(['q' => urlencode($keyword)]);
+        
+        if ($request->ajax()) {
+            $content = '';
+            foreach ($stories as $story) {
+                $content .= view('front.items.meta_story', ['story' => $story])->render();
+            }
+    
+            $stories = $stories->toArray();
+            unset($stories['data']);
+            $stories['content'] = $content;
+
+            return response()->json($stories);
+        }
+
+        return view('front.search', compact('stories', 'keyword'));
     }
 }

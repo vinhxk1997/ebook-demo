@@ -27,9 +27,6 @@ class StoryController extends Controller
     {
         $story = $this->story->with([
             'metas',
-            'chapters' => function ($query) {
-                return $query->select('id', 'story_id')->withCount('votes');
-            },
             'user',
         ])->withCount(['metas', 'chapters'])->findOrFail($id);
 
@@ -52,7 +49,6 @@ class StoryController extends Controller
             return $chapter;
         });
 
-        $story->votes_count = $story->chapters->sum('votes_count');
         $story->share_text = urlencode($story->title);
         $story->share_url = urlencode(route('story', ['id' => $story->id, 'slug' => $story->slug]));
         $first_chapter = $story->chapters->first();
