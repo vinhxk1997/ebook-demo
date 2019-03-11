@@ -204,6 +204,18 @@ class BaseRepository implements RepositoryInterface
         $this->resetModel();
     }
 
+    public function increment($column, $amount = 1, array $extra = [])
+    {
+        $this->model->increment($column, $amount, $extra);
+        $this->resetModel();
+    }
+
+    public function decrement($column, $amount = 1, array $extra = [])
+    {
+        $this->model->decrement($column, $amount, $extra);
+        $this->resetModel();
+    }
+
     public function delete($id)
     {
         $this->model->where($this->model->getKeyName(), $id)->delete();

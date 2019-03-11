@@ -6,7 +6,7 @@
         <h4 class="story-title">{{ $story->title }}</h4>
         <div class="story-stats">
             <span class="view-count"><i class="fa fa-eye"></i> {{ $story->views }}</span>
-            <span class="vote-count"><i class="fa fa-star"></i> {{ $story->chapters->sum('vote_count') }}</span>
+            <span class="vote-count"><i class="fa fa-star"></i> {{ $story->votes }}</span>
             <span class="chapter-count"><i class="fa fa-list-ul"></i> {{ $story->chapters_count }}</span>
         </div>
         <div class="actions">

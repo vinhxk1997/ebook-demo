@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateReadingListRequest;
+use App\Http\Requests\{
+    CreateReadingListRequest,
+    EditReadingListRequest
+};
 use App\Models\SaveList;
 use App\Repositories\SaveListRepository;
 use App\Repositories\UserRepository;
@@ -20,6 +23,7 @@ class LibraryController extends Controller
         $this->user = $user;
     }
 
+    // view reading stories
     public function library()
     {
         $stories = $this->user->getSaveStories(Auth::user(), 0);
@@ -27,6 +31,15 @@ class LibraryController extends Controller
         return view('front.library_save', compact('stories'));
     }
 
+    // view archive stories
+    public function archive()
+    {
+        $stories = $this->user->getSaveStories(Auth::user(), 1);
+
+        return view('front.library_save', compact('stories'));
+    }
+
+    // archive a story
     public function archiveStory(Request $request)
     {
         $story_id = $request->story_id;
@@ -60,6 +73,7 @@ class LibraryController extends Controller
         return response()->json(compact('action', 'success', 'message'), $status);
     }
 
+    // change archived story status
     public function archiveStatus(Request $request)
     {
         $story_id = $request->story_id;
@@ -89,6 +103,85 @@ class LibraryController extends Controller
         return response()->json(compact('success', 'message'), $status);
     }
 
+    // view reading lists
+    public function lists(Request $request)
+    {
+        $lists = $this->saveList->getSaveLists(Auth::user());
+
+        if ($request->ajax()) {
+            return $this->listsAjaxPaginate($lists);
+        }
+
+        return view('front.library_list', compact('lists'));
+    }
+
+    // ajax paginate reading list
+    private function listsAjaxPaginate($lists)
+    {
+        $content = '';
+        foreach ($lists as $list) {
+            $content .= view('front.items.reading_list', ['list' => $list])->render();
+        }
+        $lists = $lists->toArray();
+        unset($lists['data']);
+        $lists['content'] = $content;
+
+        return response()->json($lists);
+    }
+
+    // ajax get reading lists
+    public function ajaxLists(Request $request)
+    {
+        $story_id = $request->story_id;
+        $lists = $this->saveList->getAjaxLists(Auth::user(), $story_id);
+        $is_archived = Auth::user()->archives()->where('story_id', $story_id)->count();
+
+        $content = view('front.ajax_lists', compact('lists', 'is_archived'))->render();
+
+        return response()->json(compact('content'));
+    }
+
+    // ajax create reading lists
+    public function createList(CreateReadingListRequest $request)
+    {
+        $source = null;
+        $data = null;
+
+        if (Auth::user()->can('create', SaveList::class)) {
+            $list_data = [
+                'user_id' => Auth::id(),
+                'name' => $request->list_name,
+            ];
+            $list = $this->saveList->create($list_data);
+            $list->stories = collect();
+            $list->stories_count = 0;
+            $list->share_url = urlencode(route('list', ['id' => $list->id]));
+            $list->share_text = urlencode(trans(
+                'app.a_reading_list_by',
+                [
+                    'list_name' => $list->name,
+                    'user_name' => Auth::user()->login_name,
+                ]
+            ));
+
+            if ($request->query('source') === 'library') {
+                $source = 'library';
+                $data = view('front.items.reading_list', ['list' => $list])->render();
+            } else {
+                $data = view('front.items.ajax_list', ['list' => $list])->render();
+            }
+
+            $success = true;
+        } else {
+            $success = false;
+        }
+
+        $message = $success ? trans('app.list_create_success') : trans('app.permission_denied');
+
+        return response()->json(compact('source', 'success', 'message', 'data'));
+    }
+
+    // add story to list
     public function ajaxAddToList(SaveList $list, Request $request)
     {
         $story_id = $request->story_id;
@@ -97,7 +190,7 @@ class LibraryController extends Controller
         $success = false;
         $message = null;
 
-        if (! $story_id) {
+        if (! $story_id || ! Auth::user()->can('edit', $list)) {
             $message = trans('app.bad_data');
         } else {
             $exists = $list->stories()->where('story_id', $story_id)->first();
@@ -122,97 +215,68 @@ class LibraryController extends Controller
         return response()->json(compact('action', 'success', 'message'), $status);
     }
 
-    public function ajaxArchive($story_id)
+    // view reading list details
+    public function list(SaveList $list, Request $request)
     {
-        $result = Auth::user()->archives()->where('story_id', $story_id)->update([
-            'is_archive' => DB::raw('1 - is_archive'),
-        ]);
-
-        return response()->json(['success' => $result]);
-    }
-
-    public function archive()
-    {
-        $stories = $this->user->getSaveStories(Auth::user(), 1);
-
-        return view('front.library_save', compact('stories'));
-    }
-
-    public function lists(Request $request)
-    {
-        $lists = $this->saveList->getSaveLists(Auth::user());
+        $list->stories_count = $list->stories()->count();
+        $stories = $list->stories()->withCount('chapters');
 
         if ($request->ajax()) {
-            return $this->listsAjaxPaginate($lists);
+            $stories = $stories->paginate(config('app.per_page'));
+
+            return $this->ajaxPaginateList($stories);
         }
 
-        return view('front.library_list', compact('lists'));
+        $stories = $stories->limit(config('app.per_page'))->get();
+        $list->share_text = urlencode(trans('app.a_reading_list_by', [
+            'list_name' => $list->name,
+            'user_name' => $list->user->login_name
+        ]));
+        $list->share_url = urlencode(route('list', ['id' => $list->id]));
+
+        return view('front.list_details', compact('list', 'stories'));
     }
 
-    private function listsAjaxPaginate($lists)
+    public function updateSync(SaveList $list, Request $request)
+    {
+        $success = true;
+        $select = $request->input('select');
+
+        if (is_array($select) && count($select) > 0) {
+            $success = $list->stories()->detach($select);
+        }
+
+        return response()->json(compact('success'));
+    }
+
+    // ajax reading list stories paginate
+    public function ajaxPaginateList($stories)
     {
         $content = '';
-        foreach ($lists as $list) {
-            $content .= view('front.items.reading_list', ['list' => $list])->render();
+        foreach ($stories as $story) {
+            $content .= view('front.items.list_story', ['story' => $story])->render();
         }
-        $lists = $lists->toArray();
-        unset($lists['data']);
-        $lists['content'] = $content;
+        $stories = $stories->toArray();
+        unset($stories['data']);
+        $stories['content'] = $content;
 
-        return response()->json($lists);
+        return response()->json($stories);
     }
 
-    public function ajaxLists(Request $request)
+    public function update(SaveList $list, EditReadingListRequest $request)
     {
-        $story_id = $request->story_id;
-        $lists = $this->saveList->getAjaxLists(Auth::user(), $story_id);
-        $is_archived = Auth::user()->archives()->where('story_id', $story_id)->count();
+        $success = $list->update([
+            'name' => $request->list_name,
+        ]);
 
-        $content = view('front.ajax_lists', compact('lists', 'is_archived'))->render();
-
-        return response()->json(compact('content'));
+        return response()->json(compact('success'));
     }
 
-    public function createList(CreateReadingListRequest $request)
+    // ajax delete list
+    public function delete(SaveList $list, Request $request)
     {
-        $source = 'library';
-        $data = null;
+        $redirect = $request->query('source') == 'details' ? route('lists') : null;
 
-        if (Auth::user()->can('create', SaveList::class)) {
-            $list_data = [
-                'user_id' => Auth::id(),
-                'name' => $request->list_name,
-            ];
-            $list = $this->saveList->create($list_data);
-            $list->stories = collect();
-            $list->stories_count = 0;
-            $list->share_url = urlencode(route('list', ['id' => $list->id]));
-            $list->share_text = urlencode(trans(
-                'app.a_reading_list_by',
-                [
-                    'list_name' => $list->name,
-                    'user_name' => Auth::user()->login_name,
-                ]
-            ));
-
-            if ($request->query('source') === 'library') {
-                $data = view('front.items.reading_list', ['list' => $list])->render();
-            } else {
-                $data = view('front.items.ajax_list', ['list' => $list])->render();
-            }
-
-            $success = true;
-        } else {
-            $success = false;
-        }
-
-        $message = $success ? trans('app.list_create_success') : trans('app.permission_denied');
-
-        return response()->json(compact('source', 'success', 'message', 'data'));
-    }
-
-    public function delete(SaveList $list)
-    {
         if (Auth::user()->can('delete', $list)) {
             $success = $list->delete();
             $message = $success ? trans('app.delete_success') : trans('app.unknow_error');
@@ -221,6 +285,6 @@ class LibraryController extends Controller
             $message = trans('app.permission_denied');
         }
 
-        return response()->json(compact('success', 'message'));
+        return response()->json(compact('success', 'message', 'redirect'));
     }
 }

@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
         )) {
             $categories = $meta->getCategories();
             View::share('categories', $categories);
+            View::share('keyword', Route::is('search') ? Request::query('q') : null);
         }
     }
 

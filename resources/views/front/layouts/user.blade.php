@@ -16,7 +16,7 @@
             <div class="row header-metadata">
                 <div class="col-4 scroll-to-element" data-id="profile-works">
                     <p>{{ $user->stories_count }}</p>
-                    <p>{{ trans_choice('app.works', $user->stories_count) }}</p>
+                    <p>{{ trans_choice('app.works_choice', $user->stories_count) }}</p>
                 </div>
                 <div class="col-4 scroll-to-element" data-id="profile-lists">
                     <p>{{ $user->save_lists_count }}</p>

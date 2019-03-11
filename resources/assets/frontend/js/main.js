@@ -89,25 +89,29 @@ $(document).ready(function () {
     }).on('click', '.on-delete-list', function (e) {
         e.preventDefault();
         var $this = $(this);
-
-        $.ajax({
-            method: 'post',
-            url: $this.data('delete-url'),
-            data: {
-                _method: 'delete'
-            },
-            cache: false,
-            dataType: 'json'
-        }).done(function (res) {
-            if (res.success === true) {
-                $this.closest('.list-item').remove();
-                ebook.showNotify(res.message, 'success')
-            } else {
-                ebook.showNotify(res.message)
-            }
-        }).fail(function (res) {
-            ebook.showNotify(ebook.lang.unknow_error)
-        })
+        if (confirm(ebook.lang.delete_list_confirm)) {
+            $.ajax({
+                method: 'post',
+                url: $this.data('delete-url'),
+                data: {
+                    _method: 'delete'
+                },
+                cache: false
+            }).done(function (res) {
+                if (res.success === true) {
+                    if (!res.redirect) {
+                        $this.closest('.list-item').remove();
+                        ebook.showNotify(res.message, 'success')
+                    } else {
+                        window.location.replace(res.redirect)
+                    }
+                } else {
+                    ebook.showNotify(res.message)
+                }
+            }).fail(function (res) {
+                ebook.showNotify(ebook.lang.unknow_error)
+            })
+        }
     }).on('click', '.on-show-more', function (e) {
         e.preventDefault();
         var $this = $(this);
@@ -206,24 +210,127 @@ $(document).ready(function () {
         e.preventDefault();
         var $this = $(this),
             $target = $this.closest('.col');
+        if (confirm(ebook.lang.unarchive_confirm)) {
+            $.ajax({
+                method: 'post',
+                url: ebook.base_url + '/library',
+                data: {
+                    story_id: $target.data('id')
+                },
+                cache: false
+            }).done(function(res) {
+                if (res.success === true) {
+                    $target.fadeOut('slow', function() {
+                        $target.remove();
+                    })
+                }
+            }).fail(function (res) {
+                ebook.showNotify(res.message)
+            })
+        }
+    }).on('click', '.on-edit-list', function (e) {
+        e.preventDefault();
+        var $this = $(this),
+            $target = $this.closest('.list-details');
+        
+        $target.addClass('list-editing');
+    }).on('click', '.on-edit-list-submit', function (e) {
+        e.preventDefault();
+        var $this = $(this),
+            $input = $('#listNameInput'),
+            $target = $this.closest('.list-details'),
+            value = $input.val().trim();
+        
+        if (value != $input.attr('value')) {
+            $.ajax({
+                method: 'post',
+                url: $target.data('url'),
+                data: {
+                    list_name: $input.val()
+                },
+                cache: false
+            }).done(function (res) {
+                if (res.success === true) {
+                    $input.attr('value', value);
+                    $('#listName').text(value);
+                    $target.removeClass('list-editing');
+                } else {
+                    ebook.showNotify(ebook.lang.unknow_error);
+                }
+            })
+        } else {
+            $target.removeClass('list-editing');
+        }
+    }).on('change' , '#selectAll', function (e) {
+        var $this = $(this),
+            $stories = $('#listStories').find('[name="select[]"]');
 
-        $.ajax({
-            method: 'post',
-            url: ebook.base_url + '/library',
-            data: {
-                story_id: $target.data('id')
-            },
-            cache: false
-        }).done(function(res) {
-            if (res.success === true) {
-                $target.fadeOut('slow', function() {
-                    $target.remove();
-                })
-            }
-        }).fail(function (res) {
-            ebook.showNotify(res.message)
+        if (! $stories.length) {
+            return false;
+        }
+        
+        var $isNotChecked = $stories.filter(function (i, $e) {
+            return ! $e.checked;
+        });
+
+
+        var state = $this.prop('checked') && $isNotChecked.length > 0;
+
+        $stories.map(function(i, $e) {
+            $e.checked = state;
         })
+        if ($this.prop('checked')) {
+            $('#listControls').addClass('show');
+            $('#selectedCount').text($stories.length);
+        } else {
+            $('#listControls').removeClass('show');
+            $('#selectedCount').text('0');
+        }
+    }).on('change', '[name="select[]"]', function () {
+        var $stories = $('#listStories').find('[name="select[]"]');
+
+        var $isNotChecked = $stories.filter(function (i, $e) {
+            return ! $e.checked;
+        });
+
+        $('#selectAll').prop('checked', $isNotChecked.length === 0);
+
+        if ($isNotChecked.length < $stories.length) {
+            $('#listControls').addClass('show');
+        } else {
+            $('#listControls').removeClass('show');
+        }
+        $('#selectedCount').text($stories.length - $isNotChecked.length);
     });
+    $('#removeFromList').on('click', function () {
+        var $this = $(this),
+            $stories = $('#listStories').find('[name="select[]"]');
+        
+        var $isChecked = $stories.filter(function (i, $e) {
+            return $e.checked;
+        });
+
+        var select_ids = $isChecked.map(function (i, $e) { return $e.value }).toArray();
+
+        if ($isChecked.length) {
+            $.ajax({
+                method: 'post',
+                url: $this.data('url'),
+                data: {
+                    select: select_ids
+                },
+                cache: false
+            }).done(function(res) {
+                if (res.success) {
+                    $isChecked.closest('.story').remove();
+                    $('#selectedCount').text('0');
+                    $('#listControls').removeClass('show');
+                }
+            }).fail(function () {
+                ebook.showNotify()
+            })
+        }
+    })
     $('#logout').on('click', function (e) {
         e.preventDefault();
         $('#logoutForm').submit()

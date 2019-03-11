@@ -23,9 +23,6 @@ class StoryRepository extends BaseRepository
         } else {
             $recommended_stories = $this->with([
                 'metas',
-                'chapters' => function ($query) {
-                    return $query->select('id', 'story_id')->withCount('votes');
-                },
                 'user',
             ])->withCount(['metas', 'chapters'])
             ->where('is_recommended', 1)
@@ -48,9 +45,6 @@ class StoryRepository extends BaseRepository
         } else {
             $recent_stories = $this->with([
                 'metas',
-                'chapters' => function ($query) {
-                    return $query->select('id', 'story_id')->withCount('votes');
-                },
                 'user',
             ])->withCount('chapters')
             ->orderBy('updated_at', 'desc')

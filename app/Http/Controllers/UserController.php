@@ -65,14 +65,7 @@ class UserController extends Controller
             }
         ]);
 
-        $stories = $this->story->with(
-            [
-                'metas',
-                'chapters' => function ($q) {
-                    $q->select('id', 'story_id', 'views')->withCount('votes');
-                }
-            ]
-        )
+        $stories = $this->story->with(['metas'])
             ->withCount(['metas', 'chapters'])
             ->where('user_id', $this->currentProfile->id)
             ->limit(config('app.profile_shown_stories'))
@@ -81,11 +74,7 @@ class UserController extends Controller
         $lists = $this->saveList->withCount('stories')
             ->with([
                 'stories' => function ($q) {
-                    $q->with([
-                        'chapters' => function ($q) {
-                            $q->select('id', 'story_id', 'views')->withCount('votes');
-                        }
-                    ])->withCount('chapters')->limit(config('app.max_random_items'));
+                    $q->withCount('chapters')->limit(config('app.max_random_items'));
                 }
             ])
             ->where('user_id', $this->currentProfile->id)
@@ -111,9 +100,18 @@ class UserController extends Controller
     public function following()
     {
         $followings = $this->user
-            ->selectRaw('users.*, follows.followed_user_id as pivot_followed_user_id, follows.following_user_id as pivot_following_user_id');
+            ->selectRaw('
+                users.*,
+                follows.followed_user_id as pivot_followed_user_id,
+                follows.following_user_id as pivot_following_user_id
+            ');
         if (Auth::check()) {
-            $followings = $followings->selectRaw('(SELECT COUNT(*) FROM follows as sub_follows WHERE following_user_id = follows.following_user_id AND followed_user_id = ?) as is_followed', [Auth::id()]);
+            $followings = $followings->selectRaw(
+                '(SELECT COUNT(*) FROM follows as sub_follows
+                    WHERE sub_follows.following_user_id = follows.following_user_id
+                    AND sub_follows.followed_user_id = ?) as is_followed',
+                [Auth::id()]
+            );
         }
         $followings = $followings->join('follows', 'users.id', '=', 'follows.following_user_id')
             ->withCount(['stories', 'saveLists', 'followers'])

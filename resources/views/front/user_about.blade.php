@@ -97,10 +97,10 @@
                                             </a>
                                         </div>
                                         <div class="meta social-meta">
-                                            <span class="read-count" data-toggle="tooltip" data-placement="top" title="{{ $list_story->chapters->sum('views') }}"><span
-                                                    class="fa fa-eye"></span> {{ $list_story->chapters->sum('views') }}</span>
-                                            <span class="vote-count" data-toggle="tooltip" data-placement="top" title="{{ $list_story->chapters->sum('votes_count') }}"><span
-                                                    class="fa fa-star"></span> {{ $list_story->chapters->sum('votes_count') }}</span>
+                                            <span class="read-count" data-toggle="tooltip" data-placement="top" title="{{ $list_story->views }}"><span
+                                                    class="fa fa-eye"></span> {{ $list_story->views }}</span>
+                                            <span class="vote-count" data-toggle="tooltip" data-placement="top" title="{{ $list_story->votes }}"><span
+                                                    class="fa fa-star"></span> {{ $list_story->votes }}</span>
                                             <span class="chapter-count"><span class="fa fa-list-ul"></span> {{ $list_story->chapters_count }}</span>
                                         </div>
                                     </div>

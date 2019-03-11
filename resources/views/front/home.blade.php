@@ -35,7 +35,7 @@
                 <h4 class="group-title">@lang('app.recent_stories')</h4>
                 <div class="group-subtitle">@lang('app.recent_stories_description')</div>
             </div>
-            <div class="owl-carousel">
+            <div class="owl-carousel custom-a">
                 @foreach ($recent_stories as $story)
                     @include('front.items.story', ['story' => $story])
                 @endforeach

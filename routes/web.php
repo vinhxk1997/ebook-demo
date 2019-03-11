@@ -22,26 +22,31 @@ Route::get('/story/{id}-{slug}', 'StoryController@story')->name('story');
 // Story chapters
 Route::get('/{id}-{slug}', 'ChapterController@index')->name('read_chapter');
 Route::get('/chapter/{id}/comments', 'ChapterController@comments')->name('chapter_comments');
+// Search
+Route::get('/search', 'HomeController@search')->name('search');
 // Saved stories
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/library', 'LibraryController@library')->name('library');
-    Route::get('/archive', 'LibraryController@archive')->name('archive');
-    Route::get('/lists', 'LibraryController@lists')->name('lists');
-    Route::get('/lists/{list}', 'LibraryController@list')->name('list');
-    Route::post('/lists/{list}', 'LibraryController@update');
+    // create story
+    Route::get('/works', 'WorkController@index')->name('works');
+    // library
+    Route::get('/library', 'LibraryController@library')->name('library'); // saved stories
+    Route::get('/archive', 'LibraryController@archive')->name('archive'); // archived stories
+    Route::get('/lists', 'LibraryController@lists')->name('lists'); // save lists
+    Route::get('/lists/{list}', 'LibraryController@list')->name('list'); // save list details
     // ajax
     Route::group(['middleware' => 'ajax'], function () {
-        Route::post('/library', 'LibraryController@archiveStory');
-        Route::post('/archive', 'LibraryController@archiveStatus');
+        Route::post('/lists/{list}/sync', 'LibraryController@updateSync')->name('remove_list_stories'); // remove stories from list
+        Route::post('/lists/{list}', 'LibraryController@update'); // update save list
+        Route::post('/library', 'LibraryController@archiveStory'); // add story to saved
+        Route::post('/archive', 'LibraryController@archiveStatus'); // change saved story status
         Route::post('/lists', 'LibraryController@createList')
             ->name('create_list')
-            ->middleware('can:create,App\Models\SaveList');
-        Route::post('/lists/{list}/stories', 'LibraryController@ajaxAddToList');
-        Route::delete('/lists/{list}', 'LibraryController@delete')->name('delete_list');
+            ->middleware('can:create,App\Models\SaveList'); // create list
+        Route::post('/lists/{list}/stories', 'LibraryController@ajaxAddToList'); // add story to save list
+        Route::delete('/lists/{list}', 'LibraryController@delete')->name('delete_list'); // delete save list
 
         Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
-            Route::get('/lists', 'LibraryController@ajaxLists')->name('lists');
-            Route::post('/archive', 'LibraryController@ajaxArchive')->name('archive');
+            Route::get('/lists', 'LibraryController@ajaxLists')->name('lists'); // ajax get lists
         });
     });
 });
