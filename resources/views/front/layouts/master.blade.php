@@ -111,8 +111,11 @@
         ebook.base_url = '{{ url('/') }}';
         ebook.lang = {
             delete_list_confirm: '{{ __('app.delete_list_confirm') }}',
+            draft: '{{ __('app.draft') }}',
+            loading: '{{ __('app.loading') }}',
             unarchive_confirm: '{{ __('app.unarchive_confirm') }}',
             unknow_error: '{{ __('app.unknow_error') }}',
+            update_success: '{{ __('app.update_success') }}',
             view_more_reply: '{{ __('app.view_more_reply') }}',
         };
     </script>
@@ -120,7 +123,9 @@
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('vendor/owl.carousel/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
+    @yield('script')
     <script src="{{ asset('js/main.js') }}"></script>
+    
 </body>
 
 </html>

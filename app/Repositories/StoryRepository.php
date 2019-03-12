@@ -1,6 +1,8 @@
 <?php
 namespace App\Repositories;
 
+use App\Models\Story;
+use Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Container\Container as Application;
 
@@ -72,4 +74,21 @@ class StoryRepository extends BaseRepository
             ->orderBy('updated_at', 'desc')
             ->paginate(config('app.comments_per_page'));
     }
+
+    public function getUserAllStories()
+    {
+        return $this->where('user_id', Auth::id())
+            ->withCount(['publishedChapters', 'chapters'])
+            ->paginate(config('app.per_page'));
+    }
+
+    public function getUserPublishedStories()
+    {
+        return $this->where('user_id', Auth::id())
+            ->withCount(['publishedChapters', 'chapters'])
+            ->where('status', Story::STATUS_PUBLISHED)
+            ->paginate(config('app.per_page'));
+    }
+
+    
 }

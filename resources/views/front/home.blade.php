@@ -22,9 +22,9 @@
                 <h4 class="group-title">@lang('app.recommendations')</h4>
                 <div class="group-subtitle">@lang('app.recommendations_description')</div>
             </div>
-            <div class="owl-carousel">
+            <div class="row">
                 @foreach ($recommended_stories as $story)
-                    @include('front.items.story', ['story' => $story])
+                    @include('front.items.story', ['story' => $story, 'is_col' => true])
                 @endforeach
             </div>
         </div>
@@ -35,9 +35,9 @@
                 <h4 class="group-title">@lang('app.recent_stories')</h4>
                 <div class="group-subtitle">@lang('app.recent_stories_description')</div>
             </div>
-            <div class="owl-carousel custom-a">
+            <div class="row">
                 @foreach ($recent_stories as $story)
-                    @include('front.items.story', ['story' => $story])
+                    @include('front.items.story', ['story' => $story, 'is_col' => true])
                 @endforeach
             </div>
         </div>

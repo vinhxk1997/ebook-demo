@@ -1,4 +1,4 @@
-<div class="story d-flex" data-url="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}">
+<div class="story d-flex {{ isset($is_col) ? ' col-sm-6 mb-3' : '' }}" data-url="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}">
     <a href="{{ route('story', ['id' => $story->id, 'slug' => $story->slug]) }}" class="on-story-preview item-cover">
         <img class="thumbnail thumbnail-md" src="{{ get_story_cover($story, 0) }}" />
     </a>

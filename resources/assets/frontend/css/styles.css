@@ -8,7 +8,9 @@ body {
     margin-top: 56px
 }
 
-p:last-child {
+p:last-child,
+label:last-child,
+.form-group:last-child {
     margin-bottom: 0
 }
 
@@ -1423,9 +1425,25 @@ ul#footer-items {
     max-height: 100px;
     bottom: 0;
 }
+
 .replies {
     width: 100%;
 }
+
 .reply {
     margin-right: 12px;
+}
+
+.custom-control-reverse .custom-control-label::before {
+    right: -2.25rem;
+    left: auto
+}
+
+.custom-control-reverse .custom-control-label::after {
+    right: calc(-1.5rem + 2px);
+    left: auto
+}
+
+.custom-control-reverse.custom-switch {
+    padding-left: 0
 }
