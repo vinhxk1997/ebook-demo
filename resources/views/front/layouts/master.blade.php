@@ -113,6 +113,7 @@
             delete_list_confirm: '{{ __('app.delete_list_confirm') }}',
             unarchive_confirm: '{{ __('app.unarchive_confirm') }}',
             unknow_error: '{{ __('app.unknow_error') }}',
+            view_more_reply: '{{ __('app.view_more_reply') }}',
         };
     </script>
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>

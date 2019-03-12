@@ -1423,4 +1423,9 @@ ul#footer-items {
     max-height: 100px;
     bottom: 0;
 }
-
+.replies {
+    width: 100%;
+}
+.reply {
+    margin-right: 12px;
+}
