@@ -168,6 +168,7 @@
                         </div>
                         <div class="chapter-comments mt-3" id="comments">
                             @auth
+                            <div class="add-comment">
                             <div class="comment-form d-flex">
                                 <div class="user-avatar">
                                     <div class="avatar avatar-md">
@@ -175,8 +176,12 @@
                                     </div>
                                 </div>
                                 <div class="comment-input flex-grow-1">
-                                    <textarea name="text" id="comment-text" class="form-control" rows="1"></textarea>
+                                    {!!  Form::textarea('text', '',['class' => 'form-control', 'rows' => '1', 'id' => 'comment-text']) !!}
+                                    <div class="d-none justify-content-end mt-1">
+                                        <button id="post-submit" data-id="{{ $chapter->id }}" class="btn btn-sm btn-primary on-post ml-2" disabled="">Post</button>
+                                    </div>
                                 </div>
+                            </div>
                             </div>
                             @endauth
                             @if ($chapter->comments->count())

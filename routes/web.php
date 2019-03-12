@@ -22,6 +22,7 @@ Route::get('/story/{id}-{slug}', 'StoryController@story')->name('story');
 // Story chapters
 Route::get('/{id}-{slug}', 'ChapterController@index')->name('read_chapter');
 Route::get('/chapter/{id}/comments', 'ChapterController@comments')->name('chapter_comments');
+Route::get('/comment/{id}/reply', 'CommentController@replies')->name('reply');
 // Search
 Route::get('/search', 'HomeController@search')->name('search');
 // Saved stories
@@ -44,6 +45,11 @@ Route::group(['middleware' => 'auth'], function () {
             ->middleware('can:create,App\Models\SaveList'); // create list
         Route::post('/lists/{list}/stories', 'LibraryController@ajaxAddToList'); // add story to save list
         Route::delete('/lists/{list}', 'LibraryController@delete')->name('delete_list'); // delete save list
+
+        Route::post('/chapter/{id}/comment', 'CommentController@addComment');
+        Route::post('/comment/{id}/reply', 'CommentController@addReply');
+        Route::delete('/chapter/comment/{id}/delete', 'CommentController@delete');
+
 
         Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
             Route::get('/lists', 'LibraryController@ajaxLists')->name('lists'); // ajax get lists
