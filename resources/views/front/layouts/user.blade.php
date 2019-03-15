@@ -51,12 +51,12 @@
                     <div class="actions ml-auto my-auto" role="menu">
                         @can('follow', $user)
                             @if ($user->is_followed)
-                            <button class="btn btn-success on-follow-user on-unfollow" data-target="{{ $user->login_name }}" data-following="true">
+                            <button class="btn btn-success on-follow" data-id="{{ $user->id }}" data-target="{{ $user->login_name }}" data-following="true">
                                 <span class="fa fa-user-plus mr-1" aria-hidden="true"></span><span
                                     class="hidden-xs truncate">@lang('app.following')</span>
                             </button>
                             @else
-                            <button class="btn btn-outline-primary on-follow-user on-unfollow" data-target="{{ $user->login_name }}" data-following="true">
+                            <button class="btn btn-light on-unfollow" data-id="{{ $user->id }}" data-target="{{ $user->login_name }}" data-following="true">
                                 <span class="fa fa-user-plus mr-1" aria-hidden="true"></span><span
                                     class="hidden-xs truncate">@lang('app.follow')</span>
                             </button>

@@ -60,10 +60,12 @@ class DataSeeder extends Seeder
         foreach ($users as $user) {
             $followings = $users->random(5);
             foreach ($followings as $following) {
-                $follow_data[] = [
-                    'followed_user_id' => $user->id,
-                    'following_user_id' => $following->id,
-                ];
+                if ($user->id !== $following->id) {
+                    $follow_data[] = [
+                        'followed_user_id' => $user->id,
+                        'following_user_id' => $following->id,
+                    ];
+                }
             }
         }
         DB::table('follows')->insert($follow_data);

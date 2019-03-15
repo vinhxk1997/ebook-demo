@@ -337,18 +337,16 @@ $(document).ready(function () {
         e.preventDefault();
         var $this = $(this);
         var $idReply = $(this).closest('.footer').find('.reply').first().find('.col-main').attr('data-id');
-        $this.html(ebook.lang.view_more_reply);
         $.ajax({
             url: $this.data('url'),
             method: 'get',
             data: { idReply: $idReply },
             cache: false
         }).done(function (a) {
+            $this.text(ebook.lang.view_more_reply);
             $this.closest('.comment').find('.replies').prepend(a.content);
-            if (a.next_page_url){
-                $this.data('url', a.next_page_url);
-            } else {
-                $this.remove()
+            if (a.key == 'no') {
+                $this.remove();
             }
         })
     }).on('click', '.on-reply-click', function (e) {
@@ -386,6 +384,45 @@ $(document).ready(function () {
             $text.val('');
             $this.prop('disabled', true);
             $this.closest('.comment').find('.on-reply-show').html(ebook.lang.view_more_reply);
+        });
+    }).on('click', '.on-follow', function () {
+        var $this = $(this);
+        $.ajax({
+            url: ebook.base_url + '/user/' + $this.data('id') + '/unfolow',
+            method: 'post',
+            cache: false,
+        }).done(function (res) {
+            if (res.success) {
+                $this.removeClass('on-follow btn-success');
+                $this.addClass('on-unfollow btn-light');
+                $this.html('<i class="fa fa-user-plus"></i> ' + ebook.lang.unfollow);
+            }
+        })
+    }).on('click', '.on-unfollow', function () {
+        var $this = $(this);
+        $.ajax({
+            url: ebook.base_url + '/user/' + $this.data('id') + '/follow',
+            method: 'post',
+            cache: false,
+        }).done(function (res) {
+            if (res.success){
+                $this.removeClass('on-unfollow btn-light');
+                $this.addClass('on-follow btn-success');
+                $this.html('<i class="fa fa-user-plus"></i> ' + ebook.lang.follow);
+            }
+        })
+    }).on('click', '#notifications', function () {
+        var notify = $(this).find('span.notify');
+        if (notify.hasClass('text-danger')) {
+            notify.removeClass('text-danger');
+        }
+        $.ajax({
+            url: ebook.base_url + '/notifications/read/' + $(this).data('id'),
+            method: 'post',
+            data: {
+                _method: 'delete'
+            },
+            cache: false,
         });
     })
     $('#removeFromList').on('click', function () {

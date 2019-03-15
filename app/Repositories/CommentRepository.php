@@ -17,13 +17,28 @@ class CommentRepository extends BaseRepository
 
         return $comments;
     }
+
     public function getReplies($id, $idReply)
     {
         $comments = $this->with('user')
-            ->where('parent_id', $id)
-            ->where('id', '<', $idReply)
-            ->orderBy('created_at', 'desc')
-            ->paginate(config('app.comments_per_page'));
+            ->where('parent_id', $id);
+        if ($idReply != null) {
+            $comments = $comments ->where('id', '<', $idReply);
+        }
+        $comments = $comments->orderBy('created_at', 'desc')
+            ->limit(config('app.comments_per_page'))->get();
+
+        return $comments;
+    }
+
+    public function getRepliesCount($id, $idReply)
+    {
+        $comments = $this->where('parent_id', $id);
+        if ($idReply != null) {
+            $comments = $comments ->where('id', '<', $idReply);
+        }
+        $comments = $comments->orderBy('created_at', 'desc')
+            ->count();
 
         return $comments;
     }

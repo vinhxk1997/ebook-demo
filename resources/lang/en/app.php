@@ -77,6 +77,7 @@ return [
     'no_comments' => 'No comments listed yet.',
     'no_list' => 'No lists available.',
     'no_story_available' => 'No stories available.',
+    'notify' => 'Notification',
     'ongoing' => 'Ongoing',
     'password' => 'Password',
     'password_confirmation' => 'Repeat password',
@@ -150,4 +151,5 @@ return [
     'works_choice' => '{0} Works|{1} Work|[2,*] Works',
     'write_a_reply' => 'Write a reply...',
     'you_will_also_like' => 'You\'ll also like',
+    'comment_notify' => ' commented on your book'
 ];

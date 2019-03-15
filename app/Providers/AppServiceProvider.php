@@ -6,6 +6,9 @@ use App\Repositories\MetaRepository;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Route, Request;
+use App\Observers\CommentObserver;
+use App\Models\Commment;
+use Auth;
 
 class AppServiceProvider extends ServiceProvider
 {

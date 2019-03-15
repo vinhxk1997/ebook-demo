@@ -51,7 +51,34 @@
                 {!! Form::close() !!}
                 <ul class="navbar-nav">
                     @auth
-                    <li class="nav-item dropdown user-dropdown">
+                    <li class="nav-item dropdown notify-dropdown d-flex">
+                    @if (auth()->user()->notifications()->whereNull('read_at')->count())
+                    <a id="notifications" data-id="{{ auth()->user()->id }}" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell fa-fw"></i>
+                        <span class="text-danger notify">{{ __('app.notify') }}</span>
+                        <span class="badge badge-danger"></span>
+                    </a>
+                    @else
+                    <a id="notifications" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell fa-fw"></i>
+                        <span class="notify">{{ __('app.notify') }}</span>
+                        <span class="badge badge-danger"></span>
+                    </a>
+                    @endif
+                    <ul class="dropdown-menu" aria-labelledby="notificationsMenu" id="notificationsMenu">
+                        
+                    @if (auth()->user()->notifications()->count())
+                        @foreach (auth()->user()->notifications()->get() as $notification)
+                            <li class="dropdown-item notification">
+                                <a href="{{ route('read_chapter',['id' => $notification->notifiable_id, 'slug' => 'accusantium-ut-odit-natus-commodi-odio-quibusdam-odit-illum-esse-reiciendis']) }}">{{ $notification->data }}</a>
+                            </li>
+                        @endforeach
+                    @else
+                        <li class="dropdown-header">No notifications</li>
+                    @endif
+                    </ul>
+                    </li>
+                    <li class="nav-item dropdown user-dropdown d-flex">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
                             <img class="user-avatar" src="{{ get_avatar(Auth::user()) }}" alt="{{ Auth::user()->login_name }}" />
                             <span>{{ Auth::user()->full_name }}</span>
@@ -117,6 +144,8 @@
             unknow_error: '{{ __('app.unknow_error') }}',
             update_success: '{{ __('app.update_success') }}',
             view_more_reply: '{{ __('app.view_more_reply') }}',
+            follow: '{{ __('app.following') }}',
+            unfollow: '{{ __('app.follow') }}',
         };
     </script>
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>

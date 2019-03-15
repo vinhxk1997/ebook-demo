@@ -19,6 +19,7 @@ class UsersTableSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => bcrypt('123456'),
             'remember_token' => str_random(10),
+            'role' => '1',
             'full_name' => 'Administrator',
             'created_at' => now(),
         ]);

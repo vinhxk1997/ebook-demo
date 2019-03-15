@@ -63,6 +63,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/comment/{id}/reply', 'CommentController@addReply');
         Route::delete('/chapter/comment/{id}/delete', 'CommentController@delete');
 
+        Route::post('/user/{id}/follow', 'FollowController@follow');
+        Route::post('/user/{id}/unfolow', 'FollowController@unFollow');
+        Route::delete('/notifications/read/{id}', 'NotificationController@read');
 
         Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
             Route::get('/lists', 'LibraryController@ajaxLists')->name('lists'); // ajax get lists

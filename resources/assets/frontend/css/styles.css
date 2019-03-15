@@ -1447,3 +1447,15 @@ ul#footer-items {
 .custom-control-reverse.custom-switch {
     padding-left: 0
 }
+a {
+    text-decoration: none !important;
+}
+ul#notificationsMenu{
+    width: auto !important;
+}
+.notification a{
+    color:violet;
+}
+.notification a:hover{
+    color: blue;
+}
