@@ -210,10 +210,10 @@ class WorkController extends Controller
         }
 
         $story->chapters()->update([
-            'status' => Chapter::STATUS_PUBLISHED
+            'status' => Chapter::STATUS_DRAFT
         ]);
 
-        $story->status = Story::STATUS_PUBLISHED;
+        $story->status = Story::STATUS_DRAFT;
         $story->save();
 
         return response()->json([
@@ -263,7 +263,7 @@ class WorkController extends Controller
         $chapter->title = $request->input('chapter_title');
         $chapter->slug = str_slug($request->input('chapter_title'));
         $chapter->content = $request->input('chapter_content');
-        $chapter->status = $request->input('publish') ? Chapter::STATUS_PUBLISHED : Chapter::DRAFT;
+        $chapter->status = $request->input('publish') ? Chapter::STATUS_PUBLISHED : Chapter::STATUS_DRAFT;
         $chapter->save();
 
         if ($chapter->status && !$story->is_published) {
@@ -285,7 +285,7 @@ class WorkController extends Controller
         $chapter->delete();
         
         if ($story->chapters()->published()->count() == 0) {
-            $story->status = Story::STATUS_PUBLISHED;
+            $story->status = Story::STATUS_DRAFT;
             $story->save();
         }
 
@@ -300,11 +300,11 @@ class WorkController extends Controller
             abort(403);
         }
 
-        $chapter->status = Chapter::STATUS_PUBLISHED;
+        $chapter->status = Chapter::STATUS_DRAFT;
         $chapter->save();
         
         if ($story->chapters()->published()->count() == 0) {
-            $story->status = Story::STATUS_PUBLISHED;
+            $story->status = Story::STATUS_DRAFT;
             $story->save();
         }
 
