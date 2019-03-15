@@ -184,8 +184,8 @@
                             </div>
                             </div>
                             @endauth
-                            @if ($chapter->comments->count())
                             <div class="collection" id="chapterComments">
+                            @if ($chapter->comments->count())                           
                                 @foreach ($chapter->comments as $comment)
                                 @include('front.items.comment', ['comment' => $comment])
                                 @endforeach

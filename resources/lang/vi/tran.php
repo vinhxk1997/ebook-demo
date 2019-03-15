@@ -92,4 +92,5 @@ return [
     'report_delete_status' => "Báo cáo đã bị xoá!",
     'update_report' => 'Cập Nhật Báo Cáo',
     'report_update_status' => 'Cập nhật báo cáo thành công!',
+    'comment_notify' =>' đã bình luận sách của bạn',
 ];

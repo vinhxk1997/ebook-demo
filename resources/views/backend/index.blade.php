@@ -10,7 +10,7 @@
                 </div>
                 <div class="mr-5">{{ $user }} {{ trans('tran.user') }}</div>
             </div>
-            <a class="card-footer text-white clearfix small z-1" href="{{ route('home') }}">
+            <a class="card-footer text-white clearfix small z-1" href="{{ route('user') }}">
                 <span class="float-left">{{ trans('tran.view_detail') }}</span>
                 <span class="float-right">
                     <i class="fas fa-angle-right"></i>

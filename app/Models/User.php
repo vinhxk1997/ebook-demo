@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes, CascadeSoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     const ROLE_USER = 0;
     const ROLE_ADMIN = 1;
@@ -88,7 +87,7 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return $this->hasMany('App\Models\Notifications', 'user_id');
+        return $this->hasMany('App\Models\Notification', 'user_id');
     }
 
     public function profile()
