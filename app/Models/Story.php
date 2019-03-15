@@ -10,6 +10,8 @@ class Story extends Model
 {
     use SoftDeletes, CascadeSoftDeletes;
 
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISHED = 1;
 
     protected $guarded = ['id'];
 
@@ -28,13 +30,33 @@ class Story extends Model
         'deteted_at',
     ];
     
+    // Scope
     public function scopeSearch($query, $keyword)
     {
         return $query->selectRaw('*, MATCH (`title`, `summary`) AGAINST (? IN BOOLEAN MODE) as `rel`', [$keyword])
             ->whereRaw('MATCH (`title`, `summary`) AGAINST (? IN BOOLEAN MODE)', [$keyword])->orderBy('rel', 'desc');
     }
 
-    public function categories()
+    public function scopePublished($q)
+    {
+        return $q->where('status', self::STATUS_PUBLISHED);
+    }
+
+    // Accessors
+    public function getIsPublishedAttribute()
+    {
+        return $this->status == self::STATUS_PUBLISHED;
+    }
+
+    // Other methods
+    public function delete()
+    {
+        $this->chapters()->delete();
+        parent::delete();
+    }
+
+    // Relationships
+    public function category()
     {
         return $this->belongsToMany('App\Models\Meta', 'meta_story', 'story_id', 'meta_id')
             ->where('type', 'category');
@@ -43,6 +65,11 @@ class Story extends Model
     public function chapters()
     {
         return $this->hasMany('App\Models\Chapter', 'story_id');
+    }
+
+    public function publishedChapters()
+    {
+        return $this->chapters()->published();   
     }
 
     public function comments()

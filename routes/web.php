@@ -29,6 +29,19 @@ Route::get('/search', 'HomeController@search')->name('search');
 Route::group(['middleware' => 'auth'], function () {
     // create story
     Route::get('/works', 'WorkController@index')->name('works');
+    Route::group(['middleware' => 'can:create,App\Models\Story'], function () {
+        Route::get('/works/new', 'WorkController@createStoryForm')->name('story_create');
+        Route::post('/works/new', 'WorkController@createStory')->middleware('ajax');
+    });
+    Route::get('/works/{story_id}', 'WorkController@editStoryForm')->name('story_edit');
+    Route::post('/works/{story_id}', 'WorkController@editStory');
+    Route::delete('/works/{story}', 'WorkController@deleteStory')->name('story_delete');
+    Route::patch('/works/{story}', 'WorkController@updateStory')->name('story_unpublish');
+    Route::post('/works/{story}/create_chapter', 'WorkController@createChapter')->name('chapter_create');
+    Route::get('/works/{story}/write/{chapter}', 'WorkController@writeChapterForm')->name('chapter_write');
+    Route::post('/works/{story}/write/{chapter}', 'WorkController@writeChapter');
+    Route::patch('/works/{story}/write/{chapter}', 'WorkController@updateChapter')->name('chapter_unpublish');
+    Route::delete('/works/{story}/write/{chapter}', 'WorkController@deleteChapter')->name('chapter_delete');
     // library
     Route::get('/library', 'LibraryController@library')->name('library'); // saved stories
     Route::get('/archive', 'LibraryController@archive')->name('archive'); // archived stories

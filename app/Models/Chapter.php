@@ -10,7 +10,7 @@ class Chapter extends Model
     use SoftDeletes;
 
     const STATUS_DRAFT = 0;
-    const STATUS_PUBLISH = 1;
+    const STATUS_PUBLISHED = 1;
 
     protected $guarded = ['id'];
 
@@ -24,6 +24,25 @@ class Chapter extends Model
         'deteted_at',
     ];
 
+    public function scopePublished($q)
+    {
+        return $q->where('status', self::STATUS_PUBLISHED);
+    }
+
+    public function getIsPublishedAttribute()
+    {
+        return $this->status == self::STATUS_PUBLISHED;
+    }
+
+    // Other methods
+    public function delete()
+    {
+        $this->comments()->delete();
+        $this->votes()->delete();
+        parent::delete();
+    }
+
+    // Relationships
     public function comments()
     {
         return $this->morphMany('App\Models\Comment', 'commentable')->where('parent_id', 0);

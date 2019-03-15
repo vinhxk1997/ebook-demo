@@ -12,7 +12,7 @@ return [
     'profile_reading_list_shown' => 2,
     'profile_list_shown_stories' => 3,
     // random items
-    'random_items' => 5,
+    'random_items' => 6,
     'max_random_items' => 25,
     // recommended item in chapter
     'chapter_recommended_items' => 2,

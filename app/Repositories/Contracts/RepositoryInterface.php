@@ -40,6 +40,8 @@ interface RepositoryInterface
 
     public function findOrFail($id);
 
+    public function findOrCreateMany($data, $key);
+
     public function create(array $data);
 
     public function update(array $data);

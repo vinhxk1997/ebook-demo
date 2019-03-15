@@ -30,7 +30,7 @@ class StoryPolicy
      */
     public function update(User $user, Story $story)
     {
-        return $user->id == $story->id;
+        return $user->id == $story->user_id;
     }
 
     /**
@@ -42,7 +42,7 @@ class StoryPolicy
      */
     public function delete(User $user, Story $story)
     {
-        return $user->id == $story->id;
+        return $user->id == $story->user_id;
     }
 
     /**
@@ -54,7 +54,7 @@ class StoryPolicy
      */
     public function restore(User $user, Story $story)
     {
-        return $user->id == $story->id;
+        return $user->id == $story->user_id;
     }
 
     /**
@@ -66,6 +66,31 @@ class StoryPolicy
      */
     public function forceDelete(User $user, Story $story)
     {
-        return $user->id == $story->id;
+        return $user->id == $story->user_id || $user->role == User::ROLE_ADMIN;
+    }
+
+    public function createChapter(User $user, Story $story)
+    {
+        return $user->id == $story->user_id;
+    }
+
+    public function updateChapter(User $user, Story $story)
+    {
+        return $user->id == $story->user_id;
+    }
+
+    public function deleteChapter(User $user, Story $story)
+    {
+        return $user->id = $story->user_id;
+    }
+
+    public function restoreChapter(User $user, Story $story)
+    {
+        return $user->id = $story->user_id;
+    }
+
+    public function forceDeleteChapter(User $user, Story $story)
+    {
+        return $user->id = $story->user_id || $user->role == User::ROLE_ADMIN;
     }
 }
