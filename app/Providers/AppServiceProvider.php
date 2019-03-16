@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Route, Request;
 use App\Observers\CommentObserver;
 use App\Models\Commment;
+use App\Models\Sotry;
 use Auth;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(MetaRepository $meta)
     {
+        view()->composer('*', function($view) {
+            if (auth()->user() != null) {
+                $user = auth()->user();
+                $noread = $user->notifications()->whereNull('read_at')->count();
+                $notifications = $user->notifications()->orderBy('created_at', 'read_at', 'desc')->get();
+
+                $view->with('notifications', $notifications);
+                $view->with('noread', $noread);
+            }
+        });
+
         if (! (Request::ajax() || app()->runningInConsole() ||
             Route::is('login') || Route::is('register')
             && Route::is('admin/*') || Route::is('password/*') || Route::is('email/*')

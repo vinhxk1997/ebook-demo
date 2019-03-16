@@ -91,4 +91,6 @@ return [
     'report_delete_status' => "Report has been deleted!",
     'update_report' => 'Update Report',
     'report_update_status' => 'Report has been updated!',
+    'follow_notify' => ' followed you',
+    'story_notify' => ' published new story',
 ];

@@ -38,14 +38,16 @@ class CommentController extends Controller
                 'commentable_id' => $chapter->id,
                 'content' => $request->comment_text,
             ]);
-            $this->notify->create([
-                'user_id' => $user->id,
-                'notifier_id' => Auth::id(),
-                'notifiable_id' => $comment->commentable_id,
-                'notifiable_type' => $comment->commentable_type,
-                'action' => 'post',
-                'data' => Auth::user()->full_name . ' đã bình luận sách của bạn',
-            ]);
+            if (auth()->user()->id != $user->id ) {
+                $this->notify->create([
+                    'user_id' => $user->id,
+                    'notifier_id' => Auth::id(),
+                    'notifiable_id' => $comment->commentable_id,
+                    'notifiable_type' => $comment->commentable_type,
+                    'action' => 'post',
+                    'data' => Auth::user()->full_name . __('tran.comment_notify'),
+                ]);
+            }
 
             return view('front.items.comment', compact('comment'))->render();
         }

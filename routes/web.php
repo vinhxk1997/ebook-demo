@@ -47,6 +47,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/archive', 'LibraryController@archive')->name('archive'); // archived stories
     Route::get('/lists', 'LibraryController@lists')->name('lists'); // save lists
     Route::get('/lists/{list}', 'LibraryController@list')->name('list'); // save list details
+    Route::get('/notification/comment/{id}', 'NotificationController@whenComment')->name('notify');
+    Route::get('/notification/story/{id}', 'NotificationController@whenCreateStory')->name('notify-story');
+
     // ajax
     Route::group(['middleware' => 'ajax'], function () {
         Route::post('/lists/{list}/sync', 'LibraryController@updateSync')->name('remove_list_stories'); // remove stories from list
@@ -65,7 +68,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::post('/user/{id}/follow', 'FollowController@follow');
         Route::post('/user/{id}/unfolow', 'FollowController@unFollow');
-        Route::delete('/notifications/read/{id}', 'NotificationController@read');
+        Route::post('/notifications/read/{id}', 'NotificationController@read');
 
         Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
             Route::get('/lists', 'LibraryController@ajaxLists')->name('lists'); // ajax get lists

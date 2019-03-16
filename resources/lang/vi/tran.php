@@ -93,4 +93,6 @@ return [
     'update_report' => 'Cập Nhật Báo Cáo',
     'report_update_status' => 'Cập nhật báo cáo thành công!',
     'comment_notify' =>' đã bình luận sách của bạn',
+    'follow_notify' =>' đã theo dõi bạn bạn',
+    'story_notify' => ' đã hoàn thành truyện mới',
 ];
