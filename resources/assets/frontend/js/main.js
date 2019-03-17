@@ -415,15 +415,12 @@ $(document).ready(function () {
         var notify = $(this).find('span.notify');
         if (notify.hasClass('text-danger')) {
             notify.removeClass('text-danger');
+            $.ajax({
+                url: ebook.base_url + '/notifications/read/' + $(this).data('id'),
+                method: 'post',
+                cache: false,
+            });
         }
-        $.ajax({
-            url: ebook.base_url + '/notifications/read/' + $(this).data('id'),
-            method: 'post',
-            data: {
-                _method: 'delete'
-            },
-            cache: false,
-        });
     })
     $('#removeFromList').on('click', function () {
         var $this = $(this),

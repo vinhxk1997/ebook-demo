@@ -14,7 +14,8 @@ use App\Models\{
 use App\Repositories\{
     ChapterRepository,
     MetaRepository,
-    StoryRepository
+    StoryRepository,
+    NotificationRepository
 };
 use Auth;
 use Illuminate\Http\Request;
@@ -23,11 +24,12 @@ class WorkController extends Controller
 {
     private $story;
 
-    public function __construct(ChapterRepository $chapter, MetaRepository $meta, StoryRepository $story)
+    public function __construct(ChapterRepository $chapter, MetaRepository $meta, StoryRepository $story, NotificationRepository $notify)
     {
         $this->chapter = $chapter;
         $this->meta = $meta;
         $this->story = $story;
+        $this->notify = $notify;
     }
 
     public function index()
@@ -268,6 +270,19 @@ class WorkController extends Controller
 
         if ($chapter->status && !$story->is_published) {
             $story->status = Story::STATUS_PUBLISHED;
+            if (Auth::check()) {
+                $users = auth()->user()->followers()->get();
+                foreach ($users as $user) {
+                    $this->notify->create([
+                        'user_id' => $user->id,
+                        'notifier_id' => Auth::id(),
+                        'notifiable_id' => $story->id,
+                        'notifiable_type' => $this->story->getModelClass(),
+                        'action' => 'create',
+                        'data' => Auth::user()->full_name . __('tran.story_notify'),
+                    ]);
+                }
+            }
             $story->save();
         }
         

@@ -1450,12 +1450,14 @@ ul#footer-items {
 a {
     text-decoration: none !important;
 }
-ul#notificationsMenu{
-    width: auto !important;
-}
 .notification a{
-    color:violet;
+    color:orange;
 }
 .notification a:hover{
     color: blue;
+}
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
 }

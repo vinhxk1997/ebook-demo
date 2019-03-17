@@ -52,7 +52,7 @@
                 <ul class="navbar-nav">
                     @auth
                     <li class="nav-item dropdown notify-dropdown d-flex">
-                    @if (auth()->user()->notifications()->whereNull('read_at')->count())
+                    @if ($noread > 0)
                     <a id="notifications" data-id="{{ auth()->user()->id }}" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-bell fa-fw"></i>
                         <span class="text-danger notify">{{ __('app.notify') }}</span>
@@ -65,13 +65,28 @@
                         <span class="badge badge-danger"></span>
                     </a>
                     @endif
-                    <ul class="dropdown-menu" aria-labelledby="notificationsMenu" id="notificationsMenu">
-                        
-                    @if (auth()->user()->notifications()->count())
-                        @foreach (auth()->user()->notifications()->get() as $notification)
+                    <ul class="dropdown-menu scrollable-menu" aria-labelledby="notificationsMenu" id="notificationsMenu">                        
+                    @if ($notifications->count() > 0)
+                        @foreach ($notifications as $notification)
+                            @if ($notification->action == 'post')
                             <li class="dropdown-item notification">
-                                <a href="{{ route('read_chapter',['id' => $notification->notifiable_id, 'slug' => 'accusantium-ut-odit-natus-commodi-odio-quibusdam-odit-illum-esse-reiciendis']) }}">{{ $notification->data }}</a>
+                                <a href="{{route('notify', ['id' => $notification->notifiable_id]) }}" class="notify-item">{{ $notification->data }}
+                                    <p>{{ $notification->created_at->diffForHumans() }}</p>
+                                </a>
                             </li>
+                            @elseif ($notification->action == 'create')
+                            <li class="dropdown-item notification">
+                                <a href="{{route('notify-story', ['id' => $notification->notifiable_id]) }}" class="notify-item">{{ $notification->data }}
+                                    <p>{{ $notification->created_at->diffForHumans() }}</p>
+                                </a>
+                            </li>
+                            @else
+                            <li class="dropdown-item notification">
+                                <a href="#" class="notify-item">{{ $notification->data }}
+                                    <p>{{ $notification->created_at->diffForHumans() }}</p>
+                                </a>
+                            </li>
+                            @endif
                         @endforeach
                     @else
                         <li class="dropdown-header">No notifications</li>
