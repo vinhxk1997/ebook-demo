@@ -53,19 +53,19 @@
                     @auth
                     <li class="nav-item dropdown notify-dropdown d-flex">
                     @if ($noread > 0)
-                    <a id="notifications" data-id="{{ auth()->user()->id }}" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                    <a id="notifications" data-id="{{ auth()->user()->id }}" class="nav-link" data-toggle="dropdown" href="#">
                         <i class="fa fa-bell fa-fw"></i>
                         <span class="text-danger notify">{{ __('app.notify') }}</span>
                         <span class="badge badge-danger"></span>
                     </a>
                     @else
-                    <a id="notifications" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                    <a id="notifications" class="nav-link" data-toggle="dropdown" href="#">
                         <i class="fa fa-bell fa-fw"></i>
                         <span class="notify">{{ __('app.notify') }}</span>
                         <span class="badge badge-danger"></span>
                     </a>
                     @endif
-                    <ul class="dropdown-menu scrollable-menu" aria-labelledby="notificationsMenu" id="notificationsMenu">                        
+                    <ul class="dropdown-menu dropdown-menu-right scrollable-menu" aria-labelledby="notificationsMenu" id="notificationsMenu">                        
                     @if ($notifications->count() > 0)
                         @foreach ($notifications as $notification)
                             @if ($notification->action == 'post')

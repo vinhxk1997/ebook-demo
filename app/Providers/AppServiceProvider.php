@@ -20,18 +20,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(MetaRepository $meta)
     {
-        view()->composer('*', function($view) {
-            if (auth()->user() != null) {
-                $user = auth()->user();
-                $noread = $user->notifications()->whereNull('read_at')->count();
-                $notifications = $user->notifications()->orderBy('created_at', 'read_at', 'desc')->get();
+        if (! Request::ajax()) {
+            view()->composer('*', function($view) {
+                if (auth()->user() != null) {
+                    $user = auth()->user();
+                    $noread = $user->notifications()->whereNull('read_at')->count();
+                    $notifications = $user->notifications()->orderBy('created_at', 'read_at', 'desc')->get();
 
-                $view->with('notifications', $notifications);
-                $view->with('noread', $noread);
-            }
-        });
+                    $view->with('notifications', $notifications);
+                    $view->with('noread', $noread);
+                }
+            });
+        }
 
-        if (! (Request::ajax() || app()->runningInConsole() ||
+        if (! (Request::ajax() || (app()->runningInConsole() && !app()->runningUnitTests()) ||
             Route::is('login') || Route::is('register')
             && Route::is('admin/*') || Route::is('password/*') || Route::is('email/*')
         )) {

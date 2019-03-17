@@ -26,6 +26,7 @@ Route::get('/comment/{id}/reply', 'CommentController@replies')->name('reply');
 // Search
 Route::get('/search', 'HomeController@search')->name('search');
 // Saved stories
+Route::get('/lists/{list}', 'LibraryController@list')->name('list'); // save list details
 Route::group(['middleware' => 'auth'], function () {
     // create story
     Route::get('/works', 'WorkController@index')->name('works');
@@ -46,7 +47,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/library', 'LibraryController@library')->name('library'); // saved stories
     Route::get('/archive', 'LibraryController@archive')->name('archive'); // archived stories
     Route::get('/lists', 'LibraryController@lists')->name('lists'); // save lists
-    Route::get('/lists/{list}', 'LibraryController@list')->name('list'); // save list details
     Route::get('/notification/comment/{id}', 'NotificationController@whenComment')->name('notify');
     Route::get('/notification/story/{id}', 'NotificationController@whenCreateStory')->name('notify-story');
 
