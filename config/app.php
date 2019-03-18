@@ -18,7 +18,7 @@ return [
     'chapter_recommended_items' => 2,
     // user avatar
     'default_avatar' => '0.png',
-    'avatar_path' => '/upload/avatars/',
+    'avatar_path' => 'upload/avatars/',
     'avatar_sizes' => [
         48,
         128,
@@ -26,14 +26,14 @@ return [
     ],
     // user cover
     'user_default_cover' => '0.jpeg',
-    'user_cover_path' => '/upload/user_covers/',
+    'user_cover_path' => 'upload/user_covers/',
     'user_cover_sizes' => [
         [320, 160],
         [1920, 600],
     ],
     // story cover
     'story_default_cover' => '0.jpeg',
-    'story_cover_path' => '/upload/story_covers/',
+    'story_cover_path' => 'upload/story_covers/',
     'story_cover_sizes' => [
         [176, 275],
         [280, 400],
@@ -211,6 +211,7 @@ return [
          */
         Collective\Html\HtmlServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -268,9 +269,11 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        // package aliases
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ],
 
 ];

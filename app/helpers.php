@@ -1,6 +1,7 @@
 <?php
 
 use Intervention\Image\Facades\Image;
+use Illuminate\Http\UploadedFile;
 
 if (!function_exists('get_avatar')) {
     function get_avatar($user, $size = null)
@@ -89,7 +90,7 @@ if (!function_exists('removeFile')) {
                 }
                 $image = preg_replace('/\.([a-z]+)$/i', '_' . $size . '.$1', $file);
                 
-                unlink('.' . $path . $image);
+                unlink($path . $image);
             }
         } catch (\Exeption $e) {
             return false;
@@ -98,22 +99,36 @@ if (!function_exists('removeFile')) {
 }
 
 if (!function_exists('uploadFile')) {
-    function uploadFile($file, $path, $sizes)
+    function uploadFile($file, $path, $sizes, $extension = null)
     {
         $fileName = microtime(true);
-        $fileExtension = $file->getClientOriginalExtension();
+        if ($file instanceOf UploadedFile) {
+            $fileExtension = $file->getClientOriginalExtension();
+            $filePath = $file->getRealPath();
+        } else {
+            $fileExtension = 'jpeg';
+            $filePath = $file;
+        }
 
         try {
+            $image = Image::make($filePath);
+            $image->backup();
+            $first = true;
             foreach ($sizes as $size) {
                 if (is_array($size)) {
                     [$width, $height] = $size;
+                    $size = implode('x', $size);
                 } else {
-                    $with = $height = $size;
+                    $width = $height = $size;
                 }
-                $fileSaveName = $fileName . '_' . $width . 'x' . $height . '.' . $fileExtension;
-                $image = Image::make($file->getRealPath());
+                $fileSaveName = $fileName . '_' . $size . '.' . $fileExtension;
+                if ($first) {
+                    $first = false;
+                } else {
+                    $image->reset();
+                }
                 $image->fit($width, $height);
-                $image->save('.' . $path . $fileSaveName);
+                $image->save($path . $fileSaveName);
             }
             
             return $fileName . '.' . $fileExtension;

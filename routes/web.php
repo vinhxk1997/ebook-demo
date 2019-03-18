@@ -80,6 +80,10 @@ Route::get('/user/{user}', 'UserController@index')->name('user_about');
 Route::get('/user/{user}/activity', 'UserController@conversations')->name('user_conversations');
 Route::get('/user/{user}/following', 'UserController@following')->name('user_following');
 
+// Social login
+Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider')->name('social_login');
+Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
+
 Route::group(['namespace' => 'Admin', 'middleware' => 'admin'], function () {
     Route::get('admin/users', 'UserController@index')->name('user');
     Route::get('admin/user/{id?}/update', 'UserController@edit')->name('update_user');

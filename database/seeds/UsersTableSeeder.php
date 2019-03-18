@@ -18,12 +18,11 @@ class UsersTableSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
             'password' => bcrypt('123456'),
-            'remember_token' => str_random(10),
             'role' => '1',
             'full_name' => 'Administrator',
             'created_at' => now(),
         ]);
-        factory(App\Models\User::class, 50)->create()->each(function ($user) {
+        factory(App\Models\User::class, 25)->create()->each(function ($user) {
             $user->profile()->save(factory(App\Models\UserProfile::class)->make());
             factory(App\Models\Story::class, rand(1, 4))->create([
                 'user_id' => $user->id,
