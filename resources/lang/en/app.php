@@ -63,6 +63,7 @@ return [
     'loading' => 'Loading...',
     'login' => 'Login',
     'login_with_facebook' => 'Login with Facebook',
+    'login_with_facebook_failed' => 'Login with Facebook failed',
     'logout' => 'Logout',
     'mature' => 'Mature',
     'more' => 'More',

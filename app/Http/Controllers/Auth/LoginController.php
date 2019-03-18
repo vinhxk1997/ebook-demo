@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\SocialUserRepository;
 use Socialite;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -63,7 +64,7 @@ class LoginController extends Controller
     }
     
     // Social login
-    public function redirectToProvider($provider)
+    public function redirectToProvider($provider, Request $request)
     {
         if (!in_array($provider, $this->providers)) {
             abort(404);
@@ -83,9 +84,15 @@ class LoginController extends Controller
             abort(404);
         }
 
-        $provider_user = Socialite::driver($provider)
-            ->fields(['name', 'email', 'gender', 'verified', 'picture.width(720).height(720)'])
-            ->user();
+        if ($request->query('code') && $request->query('state')) {
+            $provider_user = Socialite::driver($provider)
+                ->fields(['name', 'email', 'gender', 'verified', 'picture.width(720).height(720)'])
+                ->user();
+        } else {
+            return redirect()->route('login')->withErrors([
+                $this->username() => [trans('app.login_with_facebook_failed')]
+            ]);
+        }
 
         $user = $this->social_user->getOrCreate($provider_user, $provider);
         if (!$user) {
