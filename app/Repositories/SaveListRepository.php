@@ -8,10 +8,13 @@ class SaveListRepository extends BaseRepository
 {
     public function getSaveLists($user)
     {
-        $lists = $this->withCount('stories')
+        $lists = $this
+            ->withCount(['stories' => function ($q) {
+                $q->published();
+            }])
             ->with([
                 'stories' => function ($query) {
-                    $query->select('id', 'cover_image')->orderBy('id', 'desc');
+                    $query->select('id', 'cover_image')->published()->orderBy('id', 'desc');
                 },
             ])
             ->where('user_id', $user->id)

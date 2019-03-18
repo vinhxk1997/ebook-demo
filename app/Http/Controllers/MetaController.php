@@ -17,11 +17,13 @@ class MetaController extends Controller
     public function stories($meta_slug, Request $request)
     {
         $meta = $this->meta->findOrFailBySlug($meta_slug);
-        $meta->stories = $meta->stories()->with([
+        $meta->stories = $meta->stories()->published()->with([
             'metas',
             'user',
         ])
-        ->withCount('chapters')->orderBy('views', 'desc')->paginate(config('app.per_page'));
+        ->withCount(['chapters' => function ($q) {
+            $q->published();
+        }])->orderBy('views', 'desc')->paginate(config('app.per_page'));
 
         if ($request->ajax()) {
             return $this->ajaxStories($meta->stories);
@@ -49,7 +51,7 @@ class MetaController extends Controller
         if ($request->ajax()) {
             $meta = $this->meta->with([
                 'stories' => function ($query) {
-                    return $query->orderBy('updated_at', 'desc')->paginate(config('app.per_page'));
+                    return $query->published()->orderBy('updated_at', 'desc')->paginate(config('app.per_page'));
                 },
             ])->findOrFailBySlug($meta_slug);
             $new_stories = $meta->stories;

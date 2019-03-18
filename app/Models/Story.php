@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -39,7 +40,12 @@ class Story extends Model
 
     public function scopePublished($q)
     {
-        return $q->where('status', self::STATUS_PUBLISHED);
+        $q = $q->where('stories.status', self::STATUS_PUBLISHED);
+        if (Auth::check()) {
+            $q = $q->orWhere('stories.user_id', Auth::id());
+        }
+
+        return $q;
     }
 
     // Accessors

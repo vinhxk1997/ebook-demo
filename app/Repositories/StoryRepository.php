@@ -18,15 +18,24 @@ class StoryRepository extends BaseRepository
         $this->comment = $comment;
     }
 
+    public function published()
+    {
+        $this->model = $this->model->published();
+
+        return $this;
+    }
+
     public function getRecommendedStories()
     {
         if (Cache::has('recommended_stories')) {
             $recommended_stories = Cache::get('recommended_stories');
         } else {
-            $recommended_stories = $this->with([
+            $recommended_stories = $this->published()->with([
                 'metas',
                 'user',
-            ])->withCount(['metas', 'chapters'])
+            ])->withCount(['metas', 'chapters' => function ($q) {
+                $q->published();
+            }])
             ->where('is_recommended', 1)
             ->limit(config('app.max_random_items'))
             ->get();
@@ -45,10 +54,12 @@ class StoryRepository extends BaseRepository
         if (Cache::has('recent_stories')) {
             $recent_stories = Cache::get('recent_stories');
         } else {
-            $recent_stories = $this->with([
+            $recent_stories = $this->published()->with([
                 'metas',
                 'user',
-            ])->withCount('chapters')
+            ])->withCount(['chapters' => function ($q) {
+                $q->published();
+            }])
             ->orderBy('updated_at', 'desc')
             ->limit(config('app.max_random_items'))
             ->get();
@@ -84,7 +95,7 @@ class StoryRepository extends BaseRepository
 
     public function getUserPublishedStories()
     {
-        return $this->where('user_id', Auth::id())
+        return $this->published()->where('user_id', Auth::id())
             ->withCount(['publishedChapters', 'chapters'])
             ->where('status', Story::STATUS_PUBLISHED)
             ->paginate(config('app.per_page'));

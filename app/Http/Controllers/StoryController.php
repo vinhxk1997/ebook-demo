@@ -25,23 +25,27 @@ class StoryController extends Controller
 
     private function ajaxStoryInfo($id)
     {
-        $story = $this->story->with([
+        $story = $this->story->published()->with([
             'metas',
             'user',
-        ])->withCount(['metas', 'chapters'])->findOrFail($id);
+        ])->withCount(['metas', 'chapters' => function ($q) {
+            $q->published();
+        }])->findOrFail($id);
 
         return view('front.story_preview', compact('story'));
     }
 
     private function getStoryInfo($id)
     {
-        $story = $this->story->with([
+        $story = $this->story->published()->with([
             'metas',
             'chapters' => function ($query) {
-                return $query->withCount('votes')->orderBy('id', 'asc');
+                return $query->published()->withCount('votes')->orderBy('id', 'asc');
             },
             'user',
-        ])->withCount(['metas', 'chapters'])->findOrFail($id);
+        ])->withCount(['metas', 'chapters' => function ($q) {
+            $q->published();
+        }])->findOrFail($id);
 
         $story->chapters = $story->chapters->map(function ($chapter) use ($story) {
             $chapter->slug = $story->slug . '-' . $chapter->slug;

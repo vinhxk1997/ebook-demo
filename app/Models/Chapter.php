@@ -26,7 +26,7 @@ class Chapter extends Model
 
     public function scopePublished($q)
     {
-        return $q->where('status', self::STATUS_PUBLISHED);
+        return $q->where('chapters.status', self::STATUS_PUBLISHED);
     }
 
     public function getIsPublishedAttribute()

@@ -22,7 +22,7 @@ class UserRepository extends BaseRepository
 
     public function getSaveStories($user, $is_archive = 0)
     {
-        $stories = $user->archives()
+        $stories = $user->archives()->published()
             ->with(['user'])
             ->wherePivot('is_archive', $is_archive)
             ->paginate(config('app.per_page'));

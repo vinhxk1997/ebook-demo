@@ -19,4 +19,9 @@ class SaveList extends Model
     {
         return $this->belongsToMany('App\Models\Story', 'list_story', 'list_id', 'story_id');
     }
+
+    public function publishedStories()
+    {
+        return $this->stories()->published();   
+    }
 }

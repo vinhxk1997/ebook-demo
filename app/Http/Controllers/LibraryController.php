@@ -51,7 +51,7 @@ class LibraryController extends Controller
         if (! $story_id) {
             $message = trans('app.bad_data');
         } else {
-            $archive = Auth::user()->archives()->where('story_id', $story_id)->first();
+            $archive = Auth::user()->archives()->published()->where('story_id', $story_id)->first();
 
             if (! $archive) {
                 try {
@@ -84,7 +84,7 @@ class LibraryController extends Controller
         if (! $story_id) {
             $message = trans('app.bad_data');
         } else {
-            $archive = Auth::user()->archives()->where('story_id', $story_id)->withPivot('is_archive')->first();
+            $archive = Auth::user()->archives()->published()->where('story_id', $story_id)->withPivot('is_archive')->first();
 
             if ($archive) {
                 Auth::user()->archives()->syncWithoutDetaching([
@@ -193,14 +193,14 @@ class LibraryController extends Controller
         if (! $story_id || ! Auth::user()->can('edit', $list)) {
             $message = trans('app.bad_data');
         } else {
-            $exists = $list->stories()->where('story_id', $story_id)->first();
+            $exists = $list->stories()->published()->where('story_id', $story_id)->first();
 
             if (! $exists) {
                 try {
                     $list->stories()->attach($story_id);
                     $success = true;
                 } catch (\Exception $e) {
-                    return $message = trans('app.bad_data');
+                    $message = trans('app.bad_data');
                 }
             } else {
                 $success = true;
@@ -218,8 +218,10 @@ class LibraryController extends Controller
     // view reading list details
     public function list(SaveList $list, Request $request)
     {
-        $list->stories_count = $list->stories()->count();
-        $stories = $list->stories()->withCount('chapters');
+        $list->stories_count = $list->stories()->published()->count();
+        $stories = $list->stories()->published()->withCount(['chapters' => function ($q) {
+            $q->published();
+        }]);
 
         if ($request->ajax()) {
             $stories = $stories->paginate(config('app.per_page'));
@@ -243,7 +245,7 @@ class LibraryController extends Controller
         $select = $request->input('select');
 
         if (is_array($select) && count($select) > 0) {
-            $success = $list->stories()->detach($select);
+            $success = $list->stories()->published()->detach($select);
         }
 
         return response()->json(compact('success'));

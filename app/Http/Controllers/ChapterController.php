@@ -23,9 +23,11 @@ class ChapterController extends Controller
     public function index($id)
     {
         $chapter = $this->chapter->published()->withCount(['votes', 'comments'])->findOrFail($id);
-        $chapter->comments = $this->comment->getComments($chapter->id, $this->chapter->getModelClass());
+        $story = $chapter->story()->published()->with(['user', 'chapters' => function ($q) {
+            $q->published();
+        }])->first();
 
-        $story = $chapter->story()->with(['user', 'chapters'])->first();
+        $chapter->comments = $this->comment->getComments($chapter->id, $this->chapter->getModelClass());
         $story->chapters = $story->chapters->map(function ($chapter) use ($story) {
             $chapter->slug = $story->slug . '-' . $chapter->slug;
 

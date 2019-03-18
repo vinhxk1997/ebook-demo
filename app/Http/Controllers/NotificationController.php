@@ -13,7 +13,7 @@ class NotificationController extends Controller
 {
     protected $notify;
 
-    public function __construct(NotificationRepository $notify, ChapterRepository $chapter,StoryRepository $story)
+    public function __construct(NotificationRepository $notify, ChapterRepository $chapter, StoryRepository $story)
     {
         $this->notify = $notify;
         $this->chapter = $chapter;
@@ -34,7 +34,7 @@ class NotificationController extends Controller
 
     public function whenComment($id)
     {
-        $chapter = $this->chapter->findOrFail($id);
+        $chapter = $this->chapter->published()->findOrFail($id);
         $chapter_id = $chapter->id;
         $chapter_slug = $chapter->slug;
 
@@ -43,7 +43,7 @@ class NotificationController extends Controller
 
     public function whenCreateStory($id)
     {
-        $story = $this->story->findOrFail($id);
+        $story = $this->story->published()->findOrFail($id);
         $story_id = $story->id;
         $story_slug = $story->slug;
 

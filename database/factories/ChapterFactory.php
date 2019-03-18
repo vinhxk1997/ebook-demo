@@ -7,5 +7,6 @@ $factory->define(App\Models\Chapter::class, function (Faker $faker) {
         'title' => $faker->text(63),
         'slug' => $faker->slug,
         'content' => $faker->paragraph(20, true),
+        'status' => rand(0, 1)
     ];
 });

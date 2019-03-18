@@ -38,7 +38,9 @@ class HomeController extends Controller
         } else {
             $user->load([
                 'saveLists.stories' => function ($query) {
-                    return $query->withCount(['chapters', 'metas']);
+                    return $query->published()->withCount(['chapters' => function ($q) {
+                        $q->published();
+                    }, 'metas']);
                 },
                 'saveLists.stories.metas',
                 'saveLists.stories.user',
@@ -60,7 +62,7 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $keyword = urldecode($request->query('q'));
-        $stories = Story::search($keyword)
+        $stories = Story::search($keyword)->published()
             ->paginate(config('app.per_page'))
             ->appends(['q' => urlencode($keyword)]);
         

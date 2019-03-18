@@ -14,4 +14,9 @@ class Meta extends Model
     {
         return $this->belongsToMany('App\Models\Story', 'meta_story', 'meta_id', 'story_id');
     }
+
+    public function publishedStories()
+    {
+        return $this->stories()->published();   
+    }
 }

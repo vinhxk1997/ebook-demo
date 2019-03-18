@@ -116,6 +116,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Models\Story', 'user_id');
     }
 
+    public function publishedStories()
+    {
+        return $this->stories()->published();   
+    }
+
     public function votings()
     {
         return $this->hasMany('App\Models\Vote', 'user_id');

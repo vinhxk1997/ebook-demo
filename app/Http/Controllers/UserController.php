@@ -26,7 +26,9 @@ class UserController extends Controller
                     }
                 ])
                 ->withCount([
-                    'stories',
+                    'stories' => function ($q) {
+                        $q->published();
+                    },
                     'saveLists',
                     'followers',
                     'followings',
@@ -65,16 +67,23 @@ class UserController extends Controller
             }
         ]);
 
-        $stories = $this->story->with(['metas'])
-            ->withCount(['metas', 'chapters'])
+        $stories = $this->story->published()->with(['metas'])
+            ->withCount(['metas', 'chapters' => function ($q) {
+                $q->published();
+            }])
             ->where('user_id', $this->currentProfile->id)
             ->limit(config('app.profile_shown_stories'))
             ->get();
         
-        $lists = $this->saveList->withCount('stories')
+        $lists = $this->saveList
+            ->withCount(['stories' => function ($q) {
+                $q->published();
+            }])
             ->with([
                 'stories' => function ($q) {
-                    $q->withCount('chapters')->limit(config('app.max_random_items'));
+                    $q->published()->withCount(['chapters' => function ($q) {
+                        $q->published();
+                    }])->limit(config('app.max_random_items'));
                 }
             ])
             ->where('user_id', $this->currentProfile->id)

@@ -30,7 +30,7 @@ class CommentController extends Controller
     public function addComment($id, CommentRequest $request)
     {
         if ($request->ajax()) {
-            $chapter = $this->chapter->findOrFail($id);
+            $chapter = $this->chapter->published()->findOrFail($id);
             $user = $this->user->findOrFail($chapter->story->user_id);
             $comment = $this->comment->create([
                 'user_id' => Auth::id(),
