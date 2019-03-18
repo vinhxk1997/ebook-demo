@@ -62,6 +62,7 @@ return [
     'list_create_success' => 'Reading list created!',
     'loading' => 'Loading...',
     'login' => 'Login',
+    'login_with_facebook' => 'Login with Facebook',
     'logout' => 'Logout',
     'mature' => 'Mature',
     'more' => 'More',

@@ -110,31 +110,21 @@ class UserController extends Controller
         $user->role = ($request->get('role') != 'admin') ? 0 : 1;
         $user->is_banned = ($request->get('ban') != 'no') ? 1 : 0;
         if ($request->hasFile('avatar_file')) {
-            $file = $request->file('avatar_file');
-            $fileName = time();
-            $user->avatar = $fileName. '.' . $file->getClientOriginalExtension();
-            $i = 0;
-            foreach (config('app.avatar_sizes') as $size) {
-                $image_resize = Image::make($file->getRealPath());
-                $image_resize->resize($size, $size);
-                $name = $fileName . '_' . $size . '.' . $file->getClientOriginalExtension();
-                $image_resize->save('.' . config('app.avatar_path') . $name);
-                $i ++;
-            }
+            $avatar = uploadFile(
+                $request->file('avatar_file'),
+                config('app.avatar_path'),
+                config('app.avatar_sizes')
+            );
+            $user->avatar = $avatar;
         }
         
         if ($request->hasFile('cover_image')) {
-            $file = $request->file('cover_image');
-            $fileName = time();
-            $user->cover_image = $fileName. '.' . $file->getClientOriginalExtension();
-            $i = 0;
-            foreach (config('app.user_cover_sizes') as $size) {
-                $image_resize = Image::make($file->getRealPath());
-                $image_resize->resize(config('app.user_cover_sizes')[$i][0], config('app.user_cover_sizes')[$i][1]);
-                $name = $fileName . '_' . config('app.user_cover_sizes')[$i][0] . 'x'. config('app.user_cover_sizes')[$i][1] . '.' . $file->getClientOriginalExtension();
-                $image_resize->save('.' . config('app.user_cover_path') . $name);
-                $i ++;
-            }
+            $user_cover = uploadFile(
+                $request->file('cover_image'),
+                config('app.user_cover_path'),
+                config('app.user_cover_sizes')
+            );
+            $user->cover_image = $user_cover;
         }
         $user->save();
         $user->profile()->updateOrCreate(

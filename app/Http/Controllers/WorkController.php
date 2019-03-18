@@ -74,12 +74,12 @@ class WorkController extends Controller
         ];
 
         if ($request->hasFile('story_cover')) {
-            $stoy_cover = uploadFile(
+            $story_cover = uploadFile(
                 $request->file('story_cover'),
                 config('app.story_cover_path'),
                 config('app.story_cover_sizes')
             );
-            $story_data['cover_image'] = $stoy_cover;
+            $story_data['cover_image'] = $story_cover;
         }
 
         $story = $this->story->create($story_data);
@@ -142,7 +142,7 @@ class WorkController extends Controller
         $story->is_complete = $request->filled('story_completed');
 
         if ($request->hasFile('story_cover')) {
-            $stoy_cover = uploadFile(
+            $story_cover = uploadFile(
                 $request->file('story_cover'),
                 config('app.story_cover_path'),
                 config('app.story_cover_sizes')
@@ -154,7 +154,7 @@ class WorkController extends Controller
                     config('app.story_cover_sizes')
                 );
             }
-            $story->cover_image = $stoy_cover;
+            $story->cover_image = $story_cover;
         }
 
         $story->save();

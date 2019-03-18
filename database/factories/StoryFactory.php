@@ -8,6 +8,7 @@ $factory->define(App\Models\Story::class, function (Faker $faker) {
         'slug' => $faker->slug,
         'summary' => $faker->paragraph(5),
         'is_recommended' => rand(0, 1),
+        'status' => rand(0, 1)
     ];
 });
 
