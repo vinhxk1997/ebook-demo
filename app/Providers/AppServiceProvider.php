@@ -3,12 +3,10 @@
 namespace App\Providers;
 
 use App\Repositories\MetaRepository;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Route, Request;
-use App\Observers\CommentObserver;
-use App\Models\Commment;
-use App\Models\Sotry;
 use Auth;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,8 +16,14 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(MetaRepository $meta)
+    public function boot(MetaRepository $meta, UrlGenerator $url)
     {
+        if (env('APP_HTTPS', false)) {
+            $url->forceScheme('https');
+            if (!Request::secure()) {
+                return redirect()->secure(Request::getRequestUri())->send();
+            }
+        }
         if (! Request::ajax()) {
             view()->composer('*', function($view) {
                 if (auth()->user() != null) {
