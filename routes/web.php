@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/works/new', 'WorkController@createStory')->middleware('ajax');
     });
     Route::get('/works/{story_id}', 'WorkController@editStoryForm')->name('story_edit');
-    Route::post('/works/{story_id}', 'WorkController@editStory');
+    Route::post('/works/{story}', 'WorkController@editStory');
     Route::delete('/works/{story}', 'WorkController@deleteStory')->name('story_delete');
     Route::patch('/works/{story}', 'WorkController@updateStory')->name('story_unpublish');
     Route::post('/works/{story}/create_chapter', 'WorkController@createChapter')->name('chapter_create');

@@ -129,13 +129,11 @@ class WorkController extends Controller
         return view('front.story_form', compact('story', 'is_edit'));
     }
 
-    public function editStory($id, Request $request)
+    public function editStory(Story $story, StoryFormRequest $request)
     {
         if (! Auth::user()->can('update', $story)) {
             abort(403);
         }
-
-        $story = $this->story->findOrFail($id);
 
         $story->title = $request->input('story_title');
         $story->slug = str_slug($request->input('story_title'));
