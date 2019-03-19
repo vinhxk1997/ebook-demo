@@ -48,6 +48,7 @@ class SocialUserRepository extends BaseRepository
                         'email' => $email,
                         'password' => str_random(63),
                         'avatar' => $avatar,
+                        'email_verified_at' => now(),
                     ]);
 
                     $account->user()->associate($user);
