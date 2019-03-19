@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use SoftDeletes, CascadeSoftDeletes;
+    use Notifiable, SoftDeletes, CascadeSoftDeletes;
 
     const ROLE_USER = 0;
     const ROLE_ADMIN = 1;
@@ -24,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'login_name',
         'email',
         'password',
+        'email_verified_at',
     ];
 
     protected $cascadeDeletes = [

@@ -8,7 +8,7 @@
                 <div class="card-header">@lang('app.reset_password')</div>
 
                 <div class="card-body">
-                    {!! Form::open(['url' => route('password.update'), 'method' => 'get']) !!}
+                    {!! Form::open(['url' => route('password.update'), 'method' => 'post']) !!}
                         {!! Form::hidden('token', $token) !!}
                         <div class="form-group row">
                             {!! Form::label('email', trans('app.email_address'), [
