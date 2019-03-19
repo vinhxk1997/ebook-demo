@@ -78,7 +78,7 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function handleProviderCallback($provider)
+    public function handleProviderCallback($provider, Request $request)
     {
         if (!in_array($provider, $this->providers)) {
             abort(404);
@@ -95,9 +95,11 @@ class LoginController extends Controller
         }
 
         $user = $this->social_user->getOrCreate($provider_user, $provider);
+
         if (!$user) {
             abort(403);
         }
+
         auth()->login($user, true);
 
         return redirect()->route('home');
