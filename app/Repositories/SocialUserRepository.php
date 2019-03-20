@@ -34,9 +34,18 @@ class SocialUserRepository extends BaseRepository
             if ($create_user) {
                 $avatar = null;
                 try {
-                    if ($providerUser->user['picture']['data']['is_silhouette'] === false) {
+                    if ($provider == 'facebook') {
+                        if ($providerUser->user['picture']['data']['is_silhouette'] === false) {
+                            $avatar = uploadFile(
+                                $providerUser->user['picture']['data']['url'],
+                                config('app.avatar_path'),
+                                config('app.avatar_sizes')
+                            );
+                        }
+                    }
+                    if ($provider == 'google') {
                         $avatar = uploadFile(
-                            $providerUser->user['picture']['data']['url'],
+                            $providerUser->user['picture'],
                             config('app.avatar_path'),
                             config('app.avatar_sizes')
                         );
