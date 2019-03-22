@@ -44,11 +44,13 @@ class MetaRepository extends BaseRepository
                 $create_data->forget($item->{$key});
             }
         }
+        $merge_data = collect();
         if ($create_data->count()) {
             $this->model->insert($create_data->toArray());
+            $merge_data = $this->whereIn($key, $create_data->pluck($key))->get();
         }
 
-        $find_data = $find_data->merge($this->whereIn($key, $create_data->pluck($key))->get());
+        $find_data = $find_data->merge($merge_data);
 
         return $find_data;
     }
