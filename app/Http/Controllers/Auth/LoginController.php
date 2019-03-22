@@ -34,6 +34,7 @@ class LoginController extends Controller
     protected $providers = [
         'facebook',
         'github',
+        'google',
     ];
 
     private $social_user;
@@ -64,7 +65,7 @@ class LoginController extends Controller
     }
     
     // Social login
-    public function redirectToProvider($provider, Request $request)
+    public function redirectToProvider($provider)
     {
         if (!in_array($provider, $this->providers)) {
             abort(404);
@@ -84,16 +85,26 @@ class LoginController extends Controller
             abort(404);
         }
 
-        if ($request->query('code') && $request->query('state')) {
-            $provider_user = Socialite::driver($provider)
-                ->fields(['name', 'email', 'gender', 'verified', 'picture.width(720).height(720)'])
-                ->user();
-        } else {
-            return redirect()->route('login')->withErrors([
-                $this->username() => [trans('app.login_with_facebook_failed')]
-            ]);
+        if ($provider == 'facebook') {
+            if ($request->query('code') && $request->query('state')) {
+                $provider_user = Socialite::driver($provider)
+                    ->fields(['name', 'email', 'gender', 'verified', 'picture.width(720).height(720)'])
+                    ->user();
+            } else {
+                return redirect()->route('login')->withErrors([
+                    $this->username() => [trans('app.login_with_socail_failed')]
+                ]);
+            }
         }
-
+        if ($provider == 'google') {
+            if ($request->query('code') && $request->query('state')) {
+                $provider_user = Socialite::driver($provider)->user();
+            } else {
+                return redirect()->route('login')->withErrors([
+                    $this->username() => [trans('app.login_with_socail_failed')]
+                ]);
+            }
+        }
         $user = $this->social_user->getOrCreate($provider_user, $provider);
 
         if (!$user) {
