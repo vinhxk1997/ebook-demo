@@ -99,7 +99,7 @@ class WorkController extends Controller
         } else {
             $tags = [$request->input('story_genre')];
         }
-        $story->tags()->attach($tags);
+        $story->metas()->sync($tags);
 
         $chapter = $story->chapters()->create([
             'title' => 'Untitled',
@@ -174,7 +174,7 @@ class WorkController extends Controller
         } else {
             $tags = [$request->input('story_genre')];
         }
-        $story->tags()->attach($tags);
+        $story->tags()->sync($tags);
         
         return [
             'success' => true,
@@ -195,7 +195,7 @@ class WorkController extends Controller
                 config('app.story_cover_sizes')
             );
         }
-        $story->delete();
+        $story->forceDelete();
 
         return response()->json([
             'success' => true,
@@ -295,7 +295,7 @@ class WorkController extends Controller
             abort(403);
         }
         
-        $chapter->delete();
+        $chapter->forceDelete();
         
         if ($story->chapters()->published()->count() == 0) {
             $story->status = Story::STATUS_DRAFT;

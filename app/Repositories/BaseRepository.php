@@ -194,32 +194,6 @@ class BaseRepository implements RepositoryInterface
         return $result;
     }
 
-    public function findOrCreateMany($data, $key) {
-        $create_data = collect();
-        $this_model_class = (new \ReflectionClass($this->model))->getShortName();
-        if (is_array($data)) {
-            foreach ($data as $item) {
-                if ($item instanceof Model && (new \ReflectionClass($item))->getShortName() === $this_model_class) {
-                    $create_data->put($item->{$key}, $item);
-                }
-            }
-        } elseif ($data instanceof Model && (new \ReflectionClass($data))->getShortName() === $this_model_class) {
-            $create_data->put($data->{$key}, $item);
-        }
-
-        $find_data = $this->whereIn($key, $create_data->pluck($key))->get();
-        if ($find_data->count()) {
-            foreach ($find_data as $item) {
-                $create_data->forget($item->{$key});
-            }
-        }
-        if ($create_data->count()) {
-            DB::table($this->model->getTable())->insert($create_data->toArray());
-        }
-
-        return $find_data;
-    }
-
     public function create(array $data)
     {
         return $this->model->create($data);
