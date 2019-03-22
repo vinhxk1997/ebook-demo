@@ -174,7 +174,7 @@ class WorkController extends Controller
         } else {
             $tags = [$request->input('story_genre')];
         }
-        $story->tags()->sync($tags);
+        $story->metas()->sync($tags);
         
         return [
             'success' => true,
